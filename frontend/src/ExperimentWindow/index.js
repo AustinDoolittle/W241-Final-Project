@@ -12,6 +12,9 @@ import Typography from '@material-ui/core/Typography';
 
 
 const styles = theme => ({
+    root: {
+        margin: "20%",
+    },
     card: {
         backgroundColor: "#f5eaea"
     },
@@ -30,35 +33,49 @@ const styles = theme => ({
 })
 
 class ExperimentWindow extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            activeStep: 0
+        }
+    }
+
+    handleNext = (event) => {
+        this.setState({activeStep: this.state.activeStep + 1})
+    }
+
     render() {
         const { classes } = this.props;
+ 
         return (
-            <Grid container 
-                spacing={0}
-                alignItems="center" 
-                justify="center"
-                direction="column"
-                className={classes.grid}>
+            <div className={classes.root}>
+                <Card className={classes.card}>
+                    <CardHeader title="UC Berkeley MIDS - W241-03 Experiment" />
+                    <CardContent>
+                    <Typography component="p" className={classes.typography}>
+                        Thank you for participating in our study. This should take no longer than 10 minutes to complete. Please click the arrow to get started!. The active step is
+                    </Typography>
+                    <Button className={classes.button}
+                        onClick={this.handleNext}>
+                        Next
+                    </Button>
+                    </CardContent>
+                    <Stepper className={classes.cardElement}
+                        activeStep={this.state.activeStep} 
+                        variant="progress"
+                        position="static">
+                        <Step>
 
-                <Grid item xs={6}>
-                    <Card className={classes.card}>
-                        <CardHeader title="UC Berkeley MIDS - W241-03 Experiment" />
-                        <CardContent>
-                        <Typography component="p" className={classes.typography}>
-                            Thank you for participating in our study. This should take no longer than 10 minutes to complete. Please click the arrow to get started!
-                        </Typography>
-                        <Button className={classes.button}>
-                            Next
-                        </Button>
-                        </CardContent>
-                        <Stepper className={classes.cardElement} 
-                            variant="progress"
-                            position="static"
-                            steps={5}>
-                        </Stepper>
-                    </Card>
-                </Grid>
-            </Grid>
+                        </Step>
+                        <Step>
+
+                        </Step>
+                        <Step>
+
+                        </Step>
+                    </Stepper>
+                </Card>
+            </div>
         );
     }
 }
