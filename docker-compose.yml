@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+    rest_api:
+        build:
+            context: .
+            dockerfile: ./docker/rest_api.dockerfile
+        image: 'w241-final-project/rest_api'
+        ports:
+            - 5000:5000
+        volumes:
+            - ./rest_api:/app\
+        environment: 
+            FLASK_ENV: development
+
+    frontend_server:
+        build:
+            context: .
+            dockerfile: ./docker/frontend.dockerfile
+        image: 'w241-final-project/frontend'
+        volumes:
+            - ./frontend:/app
+        depends_on: 
+            - rest_api
