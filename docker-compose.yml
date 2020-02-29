@@ -9,15 +9,17 @@ services:
         ports:
             - 5000:5000
         volumes:
-            - ./rest_api:/app\
+            - ./rest_api:/app
         environment: 
             FLASK_ENV: development
 
-    frontend_server:
+    frontend:
         build:
             context: .
             dockerfile: ./docker/frontend.dockerfile
         image: 'w241-final-project/frontend'
+        ports:
+            - 5001:5000
         volumes:
             - ./frontend:/app
         depends_on: 
