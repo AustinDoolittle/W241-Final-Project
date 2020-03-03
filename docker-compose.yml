@@ -3,7 +3,10 @@ version: '3'
 services:
 
     postgres:
-        image: 'postgres:9.6.17'
+        image: 'w241-final-project/postgres'
+        build:
+            context: .
+            dockerfile: ./docker/db.dockerfile
         environment: 
             POSTGRES_PASSWORD: CHANGEME
         volumes:

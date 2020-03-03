@@ -1,6 +1,7 @@
-from flask import Flask, g
+from flask import Flask, g, jsonify, request
 from flask_cors import CORS
 
+from src.schema import CellSelectionSchema, UserActionSchema
 from src.database_client import DatabaseClient
 
 _JSON_CONTENT_TYPE = {'ContentType':'application/json'} 
@@ -10,7 +11,15 @@ CORS(app)
 
 def get_db_interface():
     if 'db' not in g:
-        g.db = DatabaseClient()
+        client = connect(
+            dbname='default', 
+            host='postgres', 
+            port=5322, 
+            user='postgres', 
+            password='CHANGEME'
+        )
+
+        g.db = DatabaseClient(client)
     
     return g.db
 
@@ -19,16 +28,18 @@ def get_db_interface():
 def index():
     return "Hello world!"
 
-
-@app.route('/subject/<subject_id>/experiment_status', methods=['GET'])
-def get_experiment_status(subject_id):
+@app.route('/subject/<subject_id>', methods=['GET'])
+def get_subject(subject_id):
     db = get_db_interface()
 
-    experiment_status = db.get_experiment_status(subject_id)
+    result = db.get_subject(subject_id)
 
-    result = {
-        'subject_id': subject_id,
-        'experiment_status': experiment_status.value 
-    }
+    return jsonify(result), 200, _JSON_CONTENT_TYPE
 
-    return experiment_status, 200, _JSON_CONTENT_TYPE
+@app.route('/move', methods=['POST'])
+def set_move():
+    user_action = UserActionSchema.load(request.get_json())
+    db = get_db_interface()
+    db.set_move(**user_action)
+
+    return "{'status': OK}", 200, _JSON_CONTENT_TYPE

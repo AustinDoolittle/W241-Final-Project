@@ -6,11 +6,11 @@ class CellState(Enum):
     Unclaimed = 'U'
 
 class AssignmentStatus(Enum):
+    NotAssigned = 'N'
     Treatment = 'T'
     Control = 'C'
-    NotAssigned = 'NA'
 
 class ExperimentStatus(Enum):
-    NotStarted = 'NA'
+    NotStarted = 'N'
     Incomplete = 'I'
     Complete = 'C'
