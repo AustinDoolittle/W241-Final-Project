@@ -1,40 +1,44 @@
-GET_SUBJECT = """
+GET_SUBJECT_QUERY_TEMPLATE = """
 SELECT experiment_status, assignment_status 
-FROM tblResults 
+FROM tblSubjects 
 WHERE subject_id = {subject_id};
 """
 
 STORE_MOVE_QUERY_TEMPLATE = """
 INSERT INTO tblResults (
     subject_id,
-    cell_top_left,
-    cell_top_middle,
-    cell_top_right,
-    cell_middle_left,
-    cell_middle_middle,
-    cell_middle_right,
-    cell_bottom_left,
-    cell_bottom_middle,
-    cell_bottom_right,
+    game_number,
+    player_symbol,
+    board_state_top_left,
+    board_state_top_middle,
+    board_state_top_right,
+    board_state_middle_left,
+    board_state_middle_middle,
+    board_state_middle_right,
+    board_state_bottom_left,
+    board_state_bottom_middle,
+    board_state_bottom_right,
     suggested_move_row,
     suggested_move_column,
-    actual_move_row,
-    actual_move_column
-) FROM (
+    move_taken_row,
+    move_taken_column
+) VALUES (
     {subject_id},
-    {cell_top_left},
-    {cell_top_middle},
-    {cell_top_right},
-    {cell_middle_left},
-    {cell_middle_middle},
-    {cell_middle_right},
-    {cell_bottom_left},
-    {cell_bottom_middle},
-    {cell_bottom_right},
+    {game_number},
+    {player_symbol},
+    {board_state_top_left},
+    {board_state_top_middle},
+    {board_state_top_right},
+    {board_state_middle_left},
+    {board_state_middle_middle},
+    {board_state_middle_right},
+    {board_state_bottom_left},
+    {board_state_bottom_middle},
+    {board_state_bottom_right},
     {suggested_move_row},
     {suggested_move_column},
-    {actual_move_row},
-    {actual_move_column}
+    {move_taken_row},
+    {move_taken_column}
 );
 """ 
 

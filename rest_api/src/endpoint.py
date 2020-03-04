@@ -11,15 +11,7 @@ CORS(app)
 
 def get_db_interface():
     if 'db' not in g:
-        client = connect(
-            dbname='default', 
-            host='postgres', 
-            port=5322, 
-            user='postgres', 
-            password='CHANGEME'
-        )
-
-        g.db = DatabaseClient(client)
+        g.db = DatabaseClient()
     
     return g.db
 
@@ -38,8 +30,8 @@ def get_subject(subject_id):
 
 @app.route('/move', methods=['POST'])
 def set_move():
-    user_action = UserActionSchema.load(request.get_json())
+    user_action = UserActionSchema().load(request.get_json())
     db = get_db_interface()
-    db.set_move(**user_action)
+    db.store_move(**user_action)
 
     return "{'status': OK}", 200, _JSON_CONTENT_TYPE
