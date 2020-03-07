@@ -36,7 +36,7 @@ export default function GameBoard() {
                 return;
             }
 
-            if (checkIfGameComplete()) {
+            if (checkIfGameComplete(rowIndex, columnIndex)) {
                 // TODO
             }
 
@@ -105,7 +105,7 @@ export default function GameBoard() {
     }
 
     function currentPlayerMove(rowIndex, columnIndex) {
-        if (boardState[rowIndex][columnIndex] != cellStates.UNCLAIMED) {
+        if (boardState[rowIndex][columnIndex] !== cellStates.UNCLAIMED) {
             throw new InvalidMoveError("This cell has already been selected.")
         }
 
