@@ -32,9 +32,10 @@ services:
         build:
             context: .
             dockerfile: ./docker/frontend.dockerfile
-        image: 'w241-final-project/frontend'
+        image: 'w241-final-project/frontend-dev'
         ports:
             - 5001:5000
+            - 5858:5858 # TODO remove
         volumes:
             - ./frontend:/app
         depends_on: 
