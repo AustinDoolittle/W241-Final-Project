@@ -5,6 +5,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 
 import GameBoard from './game/GameBoard';
+import { Paper } from '@material-ui/core';
 
 
 const styles = theme => ({

@@ -10,8 +10,19 @@ const useStyles = makeStyles({
         width: "100%",
         height: "100%",
         float: "none"
+    },
+    floatRight: {
+        float: "right"
+    },
+    floatLeft: {
+        float: "left"
     }
 })
+
+const players = {
+    COMPUTER: 'COMPUTER',
+    HUMAN: 'HUMAN'
+}
 
 class InvalidMoveError extends Error {
     constructor(message) {
@@ -22,7 +33,12 @@ class InvalidMoveError extends Error {
 
 export default function GameBoard(props) {
     const defaultInitialBoardState = Array(3).fill().map(() => Array(3).fill(cellStates.UNCLAIMED));
-    const { initialBoardState = defaultInitialBoardState } = props;
+    const defaultPlayerAssignments = {};
+    defaultPlayerAssignments[cellStates.X] = players.HUMAN;
+    defaultPlayerAssignments[cellStates.O] = players.COMPUTER;
+
+    const { initialBoardState = defaultInitialBoardState, playerAssignments = defaultPlayerAssignments } = props;
+
     const [boardState, setBoardState] = useState(initialBoardState);
     const [currentPlayer, setCurrentPlayer] = useState(cellStates.X);
     const classes = useStyles();
@@ -141,12 +157,29 @@ export default function GameBoard(props) {
         })
     };
 
+    // TODO create a seperate component for this
+    var turnString;
+    if (playerAssignments[currentPlayer] === players.HUMAN) {
+        turnString = "the computer's"
+    }
+    else {
+        turnString = "your"
+    }
+
+    const inverseSymbolAssignment = {};
+    inverseSymbolAssignment[playerAssignments[cellStates.X]] = cellStates.X;
+    inverseSymbolAssignment[playerAssignments[cellStates.O]] = cellStates.O;
+    const playerAssignmentString = `You: ${inverseSymbolAssignment[players.HUMAN]}, Computer: ${inverseSymbolAssignment[players.COMPUTER]}`;
+
     return (
         // TODO It feels like I should just be able to define the style for the `table` tag?
         <div>
-            It's {currentPlayer}'s turn
+            <div className={classes.floatLeft}>It's {turnString} turn</div>
+            <div className={classes.floatRight}>{playerAssignmentString}</div>
             <table className={classes.table}>
-                {renderGameCells()}
+                <tbody>
+                    {renderGameCells()}
+                </tbody>
             </table>
         </div>
     )
