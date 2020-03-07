@@ -20,8 +20,9 @@ class InvalidMoveError extends Error {
     }
 }
 
-export default function GameBoard() {
-    const initialBoardState = Array(3).fill().map(() => Array(3).fill(cellStates.UNCLAIMED))
+export default function GameBoard(props) {
+    const defaultInitialBoardState = Array(3).fill().map(() => Array(3).fill(cellStates.UNCLAIMED));
+    const { initialBoardState = defaultInitialBoardState } = props;
     const [boardState, setBoardState] = useState(initialBoardState);
     const [currentPlayer, setCurrentPlayer] = useState(cellStates.X);
     const classes = useStyles();
@@ -63,12 +64,12 @@ export default function GameBoard() {
         return checkIfSequenceIsComplete(columnValues);
     }
     function checkForwardDiagonalForWinner(currentMoveRowIndex, currentMoveColumnIndex) {
-        var nColumns = boardState[currentMoveRowIndex].length;
+        var maxIndex = boardState[currentMoveRowIndex].length - 1;
 
-        if (currentMoveRowIndex !== (nColumns - currentMoveColumnIndex)) {
+        if (currentMoveRowIndex !== (maxIndex - currentMoveColumnIndex)) {
             return false;
         }
-        var diagonalValues = boardState.map((row, rowIndex) => row[nColumns - rowIndex])
+        var diagonalValues = boardState.map((row, rowIndex) => row[maxIndex - rowIndex])
         return checkIfSequenceIsComplete(diagonalValues);
     }
     function checkBackwardDiagonalForWinner(currentMoveRowIndex, currentMoveColumnIndex) {
