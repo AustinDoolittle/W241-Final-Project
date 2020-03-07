@@ -5,7 +5,6 @@ import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 
 import GameBoard from './game/GameBoard';
-import { Paper } from '@material-ui/core';
 
 
 const styles = theme => ({
@@ -64,53 +63,5 @@ function ExperimentWindow(props) {
         </Card>
     );
 }
-
-// class ExperimentWindow extends Component {
-//     constructor(props) {
-//         super(props)
-//         this.state = {
-//             activeStep: 0
-//         }
-//     }
-
-//     handleNext = (event) => {
-//         this.setState({activeStep: this.state.activeStep + 1})
-//     }
-
-//     render() {
-//         const { classes } = this.props;
- 
-//         return (
-//             <div className={classes.root}>
-//                 <Card className={classes.card}>
-//                     <CardHeader title="UC Berkeley MIDS - W241-03 Experiment" />
-//                     <CardContent>
-//                     <Typography component="p" className={classes.typography}>
-//                         Thank you for participating in our study. This should take no longer than 10 minutes to complete. Please click the arrow to get started!. The active step is
-//                     </Typography>
-//                     <Button className={classes.button}
-//                         onClick={this.handleNext}>
-//                         Next
-//                     </Button>
-//                     </CardContent>
-//                     <Stepper className={classes.cardElement}
-//                         activeStep={this.state.activeStep} 
-//                         variant="progress"
-//                         position="static">
-//                         <Step>
-
-//                         </Step>
-//                         <Step>
-
-//                         </Step>
-//                         <Step>
-
-//                         </Step>
-//                     </Stepper>
-//                 </Card>
-//             </div>
-//         );
-//     }
-// }
 
 export default withStyles(styles)(ExperimentWindow);

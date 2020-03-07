@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import GameCell, {cellStates} from './GameCell.js'
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper } from '@material-ui/core';
 
 const useStyles = makeStyles({
     table: {
