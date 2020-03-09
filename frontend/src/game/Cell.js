@@ -10,8 +10,13 @@ const useStyles = makeStyles({
         margin: "10px",
         textAlign: "center",
         borderStyle: "solid",
+    },
+    clickable: {
         cursor: "pointer"
     },
+    unclickable: {
+        cursor: "not-allowed"
+    }
 });
 
 export const cellStates = {
@@ -20,7 +25,7 @@ export const cellStates = {
     UNCLAIMED: 'U'
 }
 
-export default function GameBoardCell(props) {
+export default function Cell(props) {
     const classes = useStyles();
     const { cellValue, onClick } = props;
 
@@ -36,9 +41,18 @@ export default function GameBoardCell(props) {
                 throw new Error('Unsupported cell value: ' + cellValue)
         };
     }
-    return (
-        <td className={classes.container} onClick={onClick}>
+
+    var returnValue;
+    if (cellValue !== cellStates.UNCLAIMED) {
+        returnValue = <td className={`${classes.container} ${classes.unclickable}`}>
             {renderCellContent()}
         </td>
-    );
+    }
+    else {
+        returnValue = <td className={`${classes.container} ${classes.clickable}`} onClick={onClick}>
+            {renderCellContent()}
+        </td>
+    }
+
+    return returnValue;
 }
