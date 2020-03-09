@@ -20,7 +20,7 @@ export const cellStates = {
     UNCLAIMED: 'U'
 }
 
-export default function GameCell(props) {
+export default function GameBoardCell(props) {
     const classes = useStyles();
     const { cellValue, onClick } = props;
 

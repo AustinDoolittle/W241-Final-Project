@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import GameCell, {cellStates} from './GameCell.js'
+import GameBoardCell, {cellStates} from './GameBoardCell'
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
@@ -147,7 +147,7 @@ export default function GameBoard(props) {
             return <tr>
                 {
                     currentRow.map((cellValue, columnIndex) => {
-                        return <GameCell cellValue={cellValue}
+                        return <GameBoardCell cellValue={cellValue}
                                     onClick={createClickHandler(rowIndex, columnIndex)}
                                 />
                     })
