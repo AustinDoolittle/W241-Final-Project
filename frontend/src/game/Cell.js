@@ -2,14 +2,28 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
-    container: {
-        minWidth: "50px",
-        width: "100px",
-        minHeight: "50px",
-        height: "100px",
-        margin: "10px",
+    td: {
+        border: "6px solid #222",
         textAlign: "center",
-        borderStyle: "solid",
+        width: "100px",
+        height: "100px",
+        padding: "10px",
+        '&:after': {
+            content: "",
+            display: "block",
+            marginTop: 100,
+        },
+        "&:first-of-type": {
+            borderLeftColor: "transparent",
+            borderTopColor: "transparent"
+        },
+        '&:nth-of-type(2)': {
+            borderTopColor: "transparent"
+        },
+        "&:nth-of-type(3)": {
+            borderRightColor: "transparent",
+            borderTopColor: "transparent"
+        }
     },
     clickable: {
         cursor: "pointer"
@@ -44,12 +58,12 @@ export default function Cell(props) {
 
     var returnValue;
     if (cellValue !== cellStates.UNCLAIMED) {
-        returnValue = <td className={`${classes.container} ${classes.unclickable}`}>
+        returnValue = <td className={`${classes.td} ${classes.unclickable}`}>
             {renderCellContent()}
         </td>
     }
     else {
-        returnValue = <td className={`${classes.container} ${classes.clickable}`} onClick={onClick}>
+        returnValue = <td className={`${classes.td} ${classes.clickable}`} onClick={onClick}>
             {renderCellContent()}
         </td>
     }

@@ -17,8 +17,7 @@
     "history": "^4.10.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
-    "react-scripts": "3.4.0",
-    "webpack": "^4.42.0"
+    "react-scripts": "3.4.0"
   },
   "scripts": {
     "start": "PORT=5000 react-scripts start",
@@ -44,9 +43,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.8.3",
     "@babel/preset-react": "^7.8.3",
-    "babel-jest": "^25.1.0",
     "enzyme": "^3.11.0",
-    "jest": "^25.1.0",
     "react-audio-player": "^0.11.1"
   }
 }

@@ -9,13 +9,15 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import PlayerSymbolAssignment from '../game/PlayerSymbolAssignment';
 import CurrentPlayer, {  players } from '../game/CurrentPlayer';
+import Grid from "@material-ui/core/Grid";
+import GridItem from "@material-ui/core/Grid"
 
 const useStyles = makeStyles(theme => ({
-    floatRight: {
-        float: 'right'
+    textAlignRight: {
+        textAlign: 'right'
     },
-    floatLeft: {
-        float: 'left'
+    textAlignLeft: {
+        textAlign: 'left'
     },
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
@@ -268,12 +270,15 @@ export default function GamePanel(props) {
 
     return (
         <div>
-            <div className={classes.floatLeft}>
-                <CurrentPlayer currentPlayer={playerSymbolAssignment[currentSymbolTurn]}></CurrentPlayer>
-            </div>
-            <div className={classes.floatRight}>
-                <PlayerSymbolAssignment playerSymbolAssignment={playerSymbolAssignment}></PlayerSymbolAssignment>
-            </div>
+            <Grid container spacing={2}>
+                <Grid item xs={3}>
+                    <CurrentPlayer currentPlayer={playerSymbolAssignment[currentSymbolTurn]} className={classes.textAlignLeft}></CurrentPlayer>
+                </Grid>
+                <Grid item xs={6}></Grid>
+                <Grid item xs={3}>
+                    <PlayerSymbolAssignment playerSymbolAssignment={playerSymbolAssignment} className={classes.textAlignRight}></PlayerSymbolAssignment>
+                </Grid>
+            </Grid>
             <CellGrid boardState={boardState} handleClick={handleGridCellClick}></CellGrid>
             <Backdrop className={classes.backdrop} open={displayBackdrop}>
                 {backdropContent}

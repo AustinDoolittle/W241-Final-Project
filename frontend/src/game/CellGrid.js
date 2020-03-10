@@ -4,12 +4,17 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
     table: {
+        width: "100%",
+        maxWidth: "750px",
         marginLeft: "auto",
         marginRight: "auto",
-        width: "100%",
-        height: "100%",
-        float: "none"
-    }
+        borderCollapse: "collapse"
+    },
+    tr: {
+        "&:nth-of-type(3) td": {
+            borderBottomColor: "transparent"
+        }
+    },
 })
 
 
@@ -21,7 +26,7 @@ export default function CellGrid(props) {
 
     function renderGameCells() {
         return boardState.map((currentRow, rowIndex) => {
-            return <tr>
+            return <tr className={classes.tr}>
                 {
                     currentRow.map((cellValue, columnIndex) => {
                         return <Cell cellValue={cellValue}
