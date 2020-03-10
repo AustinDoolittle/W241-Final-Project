@@ -26,10 +26,21 @@ const useStyles = makeStyles({
         }
     },
     clickable: {
-        cursor: "pointer"
+        margin: "auto",
+        borderRadius: "3px",
+        backgroundColor: "#7bb2ff",
+        cursor: "pointer",
+        width: "80%",
+        height: "80%"
     },
     unclickable: {
-        cursor: "not-allowed"
+        margin: "0 auto",
+        fontSize: "10vmin",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "80%",
+        height: "80%"
     }
 });
 
@@ -44,29 +55,15 @@ export default function Cell(props) {
     const { cellValue, onClick } = props;
 
     function renderCellContent()  {
-        switch(cellValue) {
-            case cellStates.UNCLAIMED:
-                return 'UNCLAIMED'
-            case cellStates.O:
-                return 'O'
-            case cellStates.X:
-                return 'X'
-            default:
-                throw new Error('Unsupported cell value: ' + cellValue)
-        };
+        if (cellValue === cellStates.UNCLAIMED) {
+            return <div className={classes.clickable} onClick={onClick}></div>
+        }
+        else {
+            return <div className={classes.unclickable}>{cellValue}</div>
+        }
     }
 
-    var returnValue;
-    if (cellValue !== cellStates.UNCLAIMED) {
-        returnValue = <td className={`${classes.td} ${classes.unclickable}`}>
-            {renderCellContent()}
-        </td>
-    }
-    else {
-        returnValue = <td className={`${classes.td} ${classes.clickable}`} onClick={onClick}>
-            {renderCellContent()}
-        </td>
-    }
-
-    return returnValue;
+    return (<td className={classes.td}>
+                {renderCellContent()}
+            </td>);
 }
