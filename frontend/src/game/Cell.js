@@ -63,7 +63,9 @@ export default function Cell(props) {
         }
     }
 
-    return (<td className={classes.td}>
-                {renderCellContent()}
-            </td>);
+    return (
+        <td className={classes.td}>
+            {renderCellContent()}
+        </td>
+    );
 }
