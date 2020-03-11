@@ -21,12 +21,29 @@ export default function GamePanel(props) {
     const [currentGameNumber, setCurrentGameNumber] = useState(0);
     const [currentSymbolTurn, setCurrentSymbolTurn] = useState(CellStates.X);
     const [gameController, setGameController] = useState();
+    const [winCount, setWinCount] = useState(0);
+    const [lossCount, setLossCount] = useState(0);
+    const [drawCount, setDrawCount] = useState(0);
     const [playerSymbolAssignment, setPlayerSymbolAssignment] = useState();
 
     function handleGridCellClick(rowIndex, columnIndex) {
         gameController.makeMove(currentSymbolTurn, rowIndex, columnIndex)
         toggleCurrentSymbolTurn();
         setGameController(gameController);
+        if (gameController.isWinner())  {
+            const winningSymbol = gameController.getWinner()
+            const winner = playerSymbolAssignment[winningSymbol]
+    
+            if (winner === Players.HUMAN) {
+                setWinCount(winCount + 1);
+            }
+            else {
+                setLossCount(lossCount + 1);
+            }
+        }
+        else if (gameController.areAllMovesExhausted()) {
+            setDrawCount(drawCount + 1);
+        }
     }
 
     function toggleCurrentSymbolTurn() {
@@ -62,6 +79,7 @@ export default function GamePanel(props) {
     function initializeGame() {        
         initializePlayerAssignments();
         initializeGameController();
+        setCurrentSymbolTurn(CellStates.X);
     }
 
     function startNextGame() {
@@ -134,6 +152,16 @@ export default function GamePanel(props) {
 
     return (
         <div>
+        <Grid container>
+            <Grid item xs={3}>
+                <span>Game {currentGameNumber + 1} of {numberOfGames}</span>
+            </Grid>
+            <Grid item xs={6}>
+            </Grid>
+            <Grid item xs={3}>
+                <span>Wins: {winCount} Losses: {lossCount} Draws: {drawCount}</span>
+            </Grid>
+        </Grid>
             <CellGrid boardState={boardState} handleClick={handleGridCellClick} isActive={boardIsActive}></CellGrid>
             <Grid container>
                 <Grid item xs={2}></Grid>
