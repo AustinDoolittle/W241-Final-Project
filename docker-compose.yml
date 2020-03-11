@@ -18,7 +18,7 @@ services:
             dockerfile: ./docker/rest_api.dockerfile
         image: 'w241-final-project/rest_api'
         ports:
-            - 5000:5000
+            - 81:5000
         volumes:
             - ./rest_api:/app
         environment: 
@@ -32,11 +32,9 @@ services:
         build:
             context: .
             dockerfile: ./docker/frontend.dockerfile
-        image: 'w241-final-project/frontend-dev'
+        image: 'w241-final-project/frontend'
         ports:
-            - 5001:5000
-        volumes:
-            - ./frontend:/app
+            - 80:5000
         depends_on: 
             - rest_api
 

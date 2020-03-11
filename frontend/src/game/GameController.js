@@ -2,11 +2,6 @@ import {CellStates} from './utils'
 
 class InvalidMoveError extends Error {};
 
-function createEmptyBoard() {
-
-}
-
-
 export default class GameController {
     rowCount = 3;
     columnCount = 3;
