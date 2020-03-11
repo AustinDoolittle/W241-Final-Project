@@ -3,6 +3,7 @@ import CellGrid from '../game/CellGrid';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
+import { useParams } from 'react-router-dom';
 import GameController from "../game/GameController"
 import { CellStates, Players } from "../game/utils";
 
@@ -16,7 +17,7 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function GamePanel(props) { 
-    const { handleAdvance, numberOfGames } = props;
+    const { handleAdvance, numberOfGames, subjectID } = props;
     const classes = useStyles(props);
     const [currentGameNumber, setCurrentGameNumber] = useState(0);
     const [currentSymbolTurn, setCurrentSymbolTurn] = useState(CellStates.X);

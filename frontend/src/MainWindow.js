@@ -7,7 +7,7 @@ import GamePanel from './panels/GamePanel';
 import LandingPanel from './panels/LandingPanel';
 import PreTreatmentPanel from './panels/PreTreatmentPanel';
 import PostTreatmentPanel from './panels/PostTreatmentPanel';
-
+import ErrorPanel from './panels/ErrorPanel';
 
 const useStyles = makeStyles({
     card: {
@@ -28,6 +28,10 @@ export default function MainWindow(props) {
     const [currentPanelIndex, setCurrentPanelIndex] = useState(0);
     const panelCount = 4;
 
+    const search =props.location.search;
+    const params = new URLSearchParams(search);
+    const subjectID = params.get('subjectID');
+
     function advanceToNextPanel() {
         const newIndex = currentPanelIndex + 1
         if (newIndex >= panelCount) {
@@ -38,23 +42,30 @@ export default function MainWindow(props) {
     }
 
     function renderCurrentPanel() {
-        const panelProps = {
-            handleAdvance: advanceToNextPanel
+        const newProps = {
+            handleAdvance: advanceToNextPanel,
+            subjectID: subjectID
+        }
+
+        if (subjectID == null) {
+            return <ErrorPanel {...newProps} />
         }
 
         if (currentPanelIndex === 0) {
-            return <LandingPanel {...panelProps}/>;
+            return <LandingPanel {...newProps}/>;
         }
         else if (currentPanelIndex === 1) {
-            return <PreTreatmentPanel {...panelProps}/>;
+            return <PreTreatmentPanel {...newProps}/>;
         }
         else if (currentPanelIndex === 2) {
-            return <GamePanel numberOfGames={numberOfGames} {...panelProps}/>;
+            return <GamePanel numberOfGames={numberOfGames} {...newProps}/>;
         }
         else {
-            return <PostTreatmentPanel {...panelProps}/>;
+            return <PostTreatmentPanel {...newProps}/>;
         }
     }
+
+
 
     return (
         <Card className={classes.card}>
@@ -65,3 +76,5 @@ export default function MainWindow(props) {
         </Card>
     );
 }
+
+
