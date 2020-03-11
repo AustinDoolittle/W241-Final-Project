@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { createBrowserHistory } from 'history';
 import "./index.css"
 
-import ExperimentWindow from './MainWindow.js';
+import MainWindow from './MainWindow.js';
 
 const history = createBrowserHistory();
 
