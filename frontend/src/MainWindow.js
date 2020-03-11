@@ -45,7 +45,7 @@ export default function MainWindow(props) {
             return <PreTreatmentPanel {... panelProps}/>;
         }
         else if (currentPanelIndex === 2) {
-            return <GamePanel numberOfGames={numberOfGames} {... panelProps}/>;
+            return <GamePanel numberOfGames={numberOfGames} {...panelProps}/>;
         }
         else {
             return <PostTreatmentPanel {... panelProps}/>;
