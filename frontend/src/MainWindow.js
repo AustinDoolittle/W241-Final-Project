@@ -15,10 +15,6 @@ const useStyles = makeStyles({
         maxWidth: "1000px",
         backgroundColor: "#f5eaea"
     },
-    advanceButton: {
-        margin: "100px",
-        float: "left"
-    }
 })
 
 const numberOfGames = 1;

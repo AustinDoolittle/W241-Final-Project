@@ -7,23 +7,24 @@ import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
-import PlayerSymbolAssignment from '../game/PlayerSymbolAssignment';
-import CurrentPlayer, {  players } from '../game/CurrentPlayer';
 import Grid from "@material-ui/core/Grid";
-import GridItem from "@material-ui/core/Grid"
 
 const useStyles = makeStyles(theme => ({
-    textAlignRight: {
-        textAlign: 'right'
+    continueButton: {
+        float: "right",
+        margin: "auto"
     },
-    textAlignLeft: {
-        textAlign: 'left'
-    },
-    backdrop: {
-        zIndex: theme.zIndex.drawer + 1,
-        color: '#fff',
+    gameStateText: {
+        display: "block",
+        textAlign: "center",
+        fontSize: "20px"
     }
 }));
+
+const players = {
+    HUMAN: "human",
+    COMPUTER: "computer"
+}
 
 class InvalidMoveError extends Error {};
 
@@ -65,8 +66,8 @@ export default function GamePanel(props) {
         }
 
         boardState[rowIndex][columnIndex] = currentSymbolTurn;
-        setBoardState(boardState);
         toggleCurrentSymbolTurn();
+        setBoardState(boardState);
     }
 
     function toggleCurrentSymbolTurn() {
@@ -173,6 +174,7 @@ export default function GamePanel(props) {
     function getWinner() {
         // TODO this is a hack
         // We rely on the fact that the turn is swapped before we actually check for a winner.
+
         if (currentSymbolTurn === cellStates.X) {
             return playerSymbolAssignment[cellStates.O]
         }
@@ -225,64 +227,49 @@ export default function GamePanel(props) {
 
     useEffect(resetGame, [currentGameNumber])
 
-
-    var displayBackdrop = false;
-    var backdropContent = null;
+    const continueButtonText = currentGameNumber === (numberOfGames + 1) ? "Finish" : "Next Game";
+    var disableContinueButton = true;
+    var gameStateText;
     if (isWinner())  {
         // there is a winner, make sure the message is displayed
+        disableContinueButton = false;
 
-        var displayString;
-        if (players.HUMAN === getWinner()) {
-            displayString = "You won!";
+        const winner = getWinner()
+
+        if (winner === players.HUMAN) {
+            gameStateText = "You win!";
         }
         else {
-            displayString = "You lost!";
+            gameStateText = "You lose!"
         }
-
-        displayBackdrop = true;
-        backdropContent =  (<Card>
-                                <CardContent>
-                                    <Typography>{displayString}</Typography>
-                                    <Button onClick={startNextGame}>Start Next Game</Button>
-                                </CardContent>
-                            </Card>)
     }
     else if (isBoardFull()) {
         // Display a draw message
-        displayBackdrop = true;
-        backdropContent =  (<Card>
-                                <CardContent>
-                                    <Typography>It's a draw!</Typography>
-                                    <Button onClick={startNextGame}>Start Next Game</Button>
-                                </CardContent>
-                            </Card>)
+        disableContinueButton = false;
+        gameStateText = "It's a draw!"
     }
     else if(playerSymbolAssignment[currentSymbolTurn] === players.COMPUTER) {
         // display the backdrop if it is the computer's turn
-        displayBackdrop = true;
-        backdropContent =  (<Card>
-                                <CardContent>
-                                    <Typography>The computer is taking their turn...</Typography>
-                                </CardContent>
-                            </Card>)
-        setTimeout(selectRandomAvailableCell, 1000)
+        setTimeout(selectRandomAvailableCell, 1000);
+        gameStateText = "The computer is making their move...";
     }
+    else {
+        gameStateText = "It's your turn";
+    }
+
 
     return (
         <div>
-            <Grid container spacing={2}>
-                <Grid item xs={3}>
-                    <CurrentPlayer currentPlayer={playerSymbolAssignment[currentSymbolTurn]} className={classes.textAlignLeft}></CurrentPlayer>
+            <CellGrid boardState={boardState} handleClick={handleGridCellClick}></CellGrid>
+            <Grid container>
+                <Grid item xs={2}></Grid>
+                <Grid item xs={8}>
+                    <span className={classes.gameStateText}>{gameStateText}</span>
                 </Grid>
-                <Grid item xs={6}></Grid>
-                <Grid item xs={3}>
-                    <PlayerSymbolAssignment playerSymbolAssignment={playerSymbolAssignment} className={classes.textAlignRight}></PlayerSymbolAssignment>
+                <Grid item xs={2}>
+                    <Button variant="contained" disabled={disableContinueButton} onClick={startNextGame}>{continueButtonText}</Button>
                 </Grid>
             </Grid>
-            <CellGrid boardState={boardState} handleClick={handleGridCellClick}></CellGrid>
-            <Backdrop className={classes.backdrop} open={displayBackdrop}>
-                {backdropContent}
-            </Backdrop> 
         </div>
     )
 }

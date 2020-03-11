@@ -35,7 +35,7 @@ const useStyles = makeStyles({
     },
     unclickable: {
         margin: "0 auto",
-        fontSize: "10vmin",
+        fontSize: "75px",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
