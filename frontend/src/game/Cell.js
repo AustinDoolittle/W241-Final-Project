@@ -26,37 +26,42 @@ const useStyles = makeStyles({
             borderTopColor: "transparent"
         }
     },
-    clickable: {
-        margin: "auto",
-        borderRadius: "3px",
-        backgroundColor: "#7bb2ff",
-        cursor: "pointer",
-        width: "80%",
-        height: "80%"
-    },
-    unclickable: {
+    cell: {
         margin: "0 auto",
         fontSize: "75px",
         display: "flex",
+        borderRadius: "3px",
         justifyContent: "center",
         alignItems: "center",
         width: "80%",
         height: "80%"
+    },
+    clickable: {
+        cursor: "pointer",
+        backgroundColor: "#7bb2ff",
     }
 });
 
 
 export default function Cell(props) {
     const classes = useStyles();
-    const { cellValue, onClick } = props;
+    const { isActive, cellValue, onClick } = props;
 
-    function renderCellContent()  {
+    function renderCellContent()  {            
+        var className = classes.cell
+        const newProps = {}
+        var cellText = cellValue
         if (cellValue === CellStates.UNCLAIMED) {
-            return <div className={classes.clickable} onClick={onClick}></div>
+            cellText = '';
+            
+            if (isActive) {
+                className += " " + classes.clickable 
+                newProps.onClick = onClick;
+                cellText = '';
+            }
         }
-        else {
-            return <div className={classes.unclickable}>{cellValue}</div>
-        }
+
+        return <div className={className} {...newProps}>{cellText}</div>
     }
 
     return (

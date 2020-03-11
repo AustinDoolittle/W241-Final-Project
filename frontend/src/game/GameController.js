@@ -13,7 +13,7 @@ export default class GameController {
     rowWinningSequences = [
         [[0, 0], [0, 1], [0, 2]],
         [[1, 0], [1, 1], [1, 2]],
-        [[1, 0], [1, 1], [1, 2]],
+        [[2, 0], [2, 1], [2, 2]],
     ]
 
     columnWinningSequences = [
@@ -32,10 +32,10 @@ export default class GameController {
         .concat(this.diagonalWinningSequences)
 
     constructor() {
-        this.boardState = createEmptyBoard();
+        this.boardState = this.createEmptyBoard();
     }
 
-    static createEmptyBoard() {
+    createEmptyBoard() {
         return Array(this.rowCount)
             .fill()
             .map(() => {
@@ -47,14 +47,14 @@ export default class GameController {
     
     isWinningSequence(sequenceCoordinates) {
         const firstCellCoordinates = sequenceCoordinates[0];
-        const firstCellState = this.boardState[firstCellCoordinates[0]][firstCellCoordinates[1]]
+        const firstCellState = this.getCellState(firstCellCoordinates[0], firstCellCoordinates[1]);
 
         if (firstCellState === CellStates.UNCLAIMED) {
             return false;
         }
 
-        for (let currentCellCoordinates of sequenceCoordinates.splice(1)) {
-            const currCellState = this.boardState[currentCellCoordinates[0]][currentCellCoordinates[1]];
+        for (let currentCellCoordinates of sequenceCoordinates.slice(1)) {
+            const currCellState = this.getCellState(currentCellCoordinates[0], currentCellCoordinates[1])
             if ( currCellState !== firstCellState) {
                 return false;
             }
@@ -129,7 +129,7 @@ export default class GameController {
     assertCellIsUnclaimed(rowIndex, columnIndex) {
         const cellValue = this.getCellState(rowIndex, columnIndex);
 
-        if (cellValue === CellStates.UNCLAIMED) {
+        if (cellValue !== CellStates.UNCLAIMED) {
             throw new InvalidMoveError(`Expected cell to be unclaimed. Was ${cellValue}.`);
         }
     }
@@ -142,6 +142,6 @@ export default class GameController {
         this.assertCoordinatesInBounds(rowIndex, columnIndex)
         this.assertCellIsUnclaimed(rowIndex, columnIndex)
 
-        this.gameBoard[rowIndex][columnIndex] = newState;
+        this.boardState[rowIndex][columnIndex] = newState;
     }
 }

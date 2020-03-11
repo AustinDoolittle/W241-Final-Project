@@ -20,12 +20,13 @@ export default function GamePanel(props) {
     const classes = useStyles(props);
     const [currentGameNumber, setCurrentGameNumber] = useState(0);
     const [currentSymbolTurn, setCurrentSymbolTurn] = useState(CellStates.X);
-    var gameController;
-    var playerSymbolAssignment;
+    const [gameController, setGameController] = useState();
+    const [playerSymbolAssignment, setPlayerSymbolAssignment] = useState();
 
     function handleGridCellClick(rowIndex, columnIndex) {
         gameController.makeMove(currentSymbolTurn, rowIndex, columnIndex)
         toggleCurrentSymbolTurn();
+        setGameController(gameController);
     }
 
     function toggleCurrentSymbolTurn() {
@@ -42,24 +43,25 @@ export default function GamePanel(props) {
     }
 
     function initializeGameController() {
-        gameController = GameController();
+        setGameController(new GameController());
     }
 
     function initializePlayerAssignments() {
-        playerSymbolAssignment = {};
+        const newPlayerSymbolAssignment = {};
         if ((currentGameNumber % 2) === 0) {
-            playerSymbolAssignment[CellStates.X] = Players.HUMAN;
-            playerSymbolAssignment[CellStates.O] = Players.COMPUTER;
+            newPlayerSymbolAssignment[CellStates.X] = Players.HUMAN;
+            newPlayerSymbolAssignment[CellStates.O] = Players.COMPUTER;
         }
         else {
-            playerSymbolAssignment[CellStates.X] = Players.COMPUTER;
-            playerSymbolAssignment[CellStates.O] = Players.HUMAN;
+            newPlayerSymbolAssignment[CellStates.X] = Players.COMPUTER;
+            newPlayerSymbolAssignment[CellStates.O] = Players.HUMAN;
         }
+        setPlayerSymbolAssignment(newPlayerSymbolAssignment);
     }
 
-    function initializeGame() {
-        initializeGameController();
+    function initializeGame() {        
         initializePlayerAssignments();
+        initializeGameController();
     }
 
     function startNextGame() {
@@ -90,38 +92,49 @@ export default function GamePanel(props) {
     const continueButtonText = currentGameNumber === (numberOfGames + 1) ? "Finish" : "Next Game";
     var disableContinueButton = true;
     var gameStateText;
-    if (gameController.isWinner())  {
-        // there is a winner, make sure the message is displayed
-        disableContinueButton = false;
-
-        const winningSymbol = gameController.getWinner()
-        const winner = playerSymbolAssignment[winningSymbol]
-
-        if (winner === Players.HUMAN) {
-            gameStateText = "You win!";
+    var boardState = [];
+    var boardIsActive = false;
+    if (gameController == null) {
+        gameStateText = "Initializing game...";
+    }
+    else 
+    {
+        boardState = gameController.getBoardState();
+        
+        if (gameController.isWinner())  {
+            // there is a winner, make sure the message is displayed
+            disableContinueButton = false;
+    
+            const winningSymbol = gameController.getWinner()
+            const winner = playerSymbolAssignment[winningSymbol]
+    
+            if (winner === Players.HUMAN) {
+                gameStateText = "You win!";
+            }
+            else {
+                gameStateText = "You lose!"
+            }
+        }
+        else if (gameController.areAllMovesExhausted()) {
+            // Display a draw message
+            disableContinueButton = false;
+            gameStateText = "It's a draw!"
+        }
+        else if(playerSymbolAssignment[currentSymbolTurn] === Players.COMPUTER) {
+            // display the backdrop if it is the computer's turn
+            setTimeout(selectRandomAvailableCell, 1000);
+            gameStateText = "The computer is making their move...";
         }
         else {
-            gameStateText = "You lose!"
+            gameStateText = "It's your turn";
+            boardIsActive = true;
         }
-    }
-    else if (gameController.areAllMovesExhausted()) {
-        // Display a draw message
-        disableContinueButton = false;
-        gameStateText = "It's a draw!"
-    }
-    else if(playerSymbolAssignment[currentSymbolTurn] === Players.COMPUTER) {
-        // display the backdrop if it is the computer's turn
-        setTimeout(selectRandomAvailableCell, 1000);
-        gameStateText = "The computer is making their move...";
-    }
-    else {
-        gameStateText = "It's your turn";
     }
 
 
     return (
         <div>
-            <CellGrid boardState={gameController.getBoardState()} handleClick={handleGridCellClick}></CellGrid>
+            <CellGrid boardState={boardState} handleClick={handleGridCellClick} isActive={boardIsActive}></CellGrid>
             <Grid container>
                 <Grid item xs={2}></Grid>
                 <Grid item xs={8}>

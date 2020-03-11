@@ -21,7 +21,7 @@ const useStyles = makeStyles({
     },
 })
 
-const numberOfGames = 1;
+const numberOfGames = 5;
 
 export default function MainWindow(props) {
     const classes = useStyles(props);

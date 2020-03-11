@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 
 export default function CellGrid(props) {
 
-    const { boardState, handleClick } = props;
+    const { boardState, isActive, handleClick } = props;
 
     const classes = useStyles();
 
@@ -29,7 +29,8 @@ export default function CellGrid(props) {
             return <tr className={classes.tr}>
                 {
                     currentRow.map((cellValue, columnIndex) => {
-                        return <Cell cellValue={cellValue}
+                        return <Cell isActive={isActive} 
+                                    cellValue={cellValue}
                                     onClick={() => handleClick(rowIndex, columnIndex)}
                                 />
                     })
