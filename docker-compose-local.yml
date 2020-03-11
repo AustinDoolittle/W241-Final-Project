@@ -1,7 +1,6 @@
 version: '3'
 
 services:
-
     postgres:
         image: 'w241-final-project/postgres'
         build:
@@ -18,7 +17,7 @@ services:
             dockerfile: ./docker/rest_api.dockerfile
         image: 'w241-final-project/rest_api'
         ports:
-            - 81:5000
+            - 5000:5000
         volumes:
             - ./rest_api:/app
         environment: 
@@ -32,13 +31,13 @@ services:
         build:
             context: .
             dockerfile: ./docker/frontend.dockerfile
-        image: 'w241-final-project/frontend'
+        image: 'w241-final-project/frontend-dev'
         ports:
-            - 80:5000
+            - 5001:5000
+        volumes:
+            - ./frontend:/app
         depends_on: 
             - rest_api
-        environment:
-            NODE_ENV: production
 
 volumes:
     db-data:
