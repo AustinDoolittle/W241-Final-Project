@@ -1,0 +1,12 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { createBrowserHistory } from 'history';
+import "./index.css"
+import MainWindow from './MainWindow.js';
+
+const history = createBrowserHistory();
+
+ReactDOM.render(
+    <MainWindow history={history} />, 
+    document.getElementById('root')
+);
