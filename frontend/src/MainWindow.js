@@ -48,7 +48,7 @@ export default function MainWindow(props) {
             return <GamePanel numberOfGames={numberOfGames} {...panelProps}/>;
         }
         else {
-            return <PostTreatmentPanel {... panelProps}/>;
+            return <PostTreatmentPanel {...panelProps}/>;
         }
     }
 
