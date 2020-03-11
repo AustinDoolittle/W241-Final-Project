@@ -1,5 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { CellStates } from "./utils";
 
 const useStyles = makeStyles({
     td: {
@@ -44,18 +45,13 @@ const useStyles = makeStyles({
     }
 });
 
-export const cellStates = {
-    X: 'X',
-    O: 'O',
-    UNCLAIMED: 'U'
-}
 
 export default function Cell(props) {
     const classes = useStyles();
     const { cellValue, onClick } = props;
 
     function renderCellContent()  {
-        if (cellValue === cellStates.UNCLAIMED) {
+        if (cellValue === CellStates.UNCLAIMED) {
             return <div className={classes.clickable} onClick={onClick}></div>
         }
         else {

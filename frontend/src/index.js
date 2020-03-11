@@ -2,12 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { createBrowserHistory } from 'history';
 import "./index.css"
-
 import MainWindow from './MainWindow.js';
 
 const history = createBrowserHistory();
 
 ReactDOM.render(
-    <ExperimentWindow history={history} />, 
+    <MainWindow history={history} />, 
     document.getElementById('root')
 );

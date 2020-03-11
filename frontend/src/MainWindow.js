@@ -15,6 +15,10 @@ const useStyles = makeStyles({
         maxWidth: "1000px",
         backgroundColor: "#f5eaea"
     },
+    continueButton: {
+        float: "right",
+        margin: "auto"
+    },
 })
 
 const numberOfGames = 1;
