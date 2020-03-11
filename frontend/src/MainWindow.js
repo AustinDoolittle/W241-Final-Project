@@ -39,7 +39,7 @@ export default function MainWindow(props) {
         }
 
         if (currentPanelIndex === 0) {
-            return <LandingPanel {... panelProps}/>;
+            return <LandingPanel {...panelProps}/>;
         }
         else if (currentPanelIndex === 1) {
             return <PreTreatmentPanel {... panelProps}/>;
