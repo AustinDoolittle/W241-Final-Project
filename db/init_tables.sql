@@ -2,6 +2,7 @@ CREATE TABLE tblSubjects (
     subject_id SERIAL,
     experiment_status VARCHAR(2) NOT NULL,
     assignment_status VARCHAR(2) NOT NULL,
+    is_pilot BOOLEAN NOT NULL,
     PRIMARY KEY(subject_id)
 );
 
