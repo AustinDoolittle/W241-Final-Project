@@ -59,8 +59,8 @@ class DatabaseClient():
         experiment_status, assignment_status = result[0]
 
         return {
-            'experiment_status': experiment_status,
-            'assignment_status': assignment_status,
+            'experiment_status': ExperimentStatus(experiment_status),
+            'assignment_status': AssignmentStatus(assignment_status),
         }
 
     def store_move(self, subject_id: int, suggested_move: dict, move_taken: dict, board_state_before_turn: dict, game_number: int, player_symbol: str):

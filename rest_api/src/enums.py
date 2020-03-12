@@ -7,7 +7,8 @@ class CellState(Enum):
 
 class AssignmentStatus(Enum):
     NotAssigned = 'N'
-    Treatment = 'T'
+    TreatmentMale = 'TM'
+    TreatmentFemale = 'TF'
     Control = 'C'
 
 class ExperimentStatus(Enum):
