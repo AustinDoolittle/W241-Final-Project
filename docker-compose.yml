@@ -22,7 +22,7 @@ services:
         volumes:
             - ./rest_api:/app
         environment: 
-            FLASK_ENV: development
+            FLASK_ENV: production
         depends_on: 
             - postgres
         links:
@@ -39,6 +39,7 @@ services:
             - rest_api
         environment:
             NODE_ENV: production
+            REST_API_URL: 52.117.215.3:81
 
 volumes:
     db-data:

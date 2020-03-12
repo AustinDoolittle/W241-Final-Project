@@ -20,9 +20,17 @@ const useStyles = makeStyles({
 
 export default function CellGrid(props) {
 
-    const { boardState, isActive, handleClick } = props;
+    const { boardState, isActive, handleClick, highlightedCell } = props;
 
     const classes = useStyles();
+
+    function isCellHighlighted(rowIndex, columnIndex) {
+        if (highlightedCell == null) {
+            return false;
+        }
+
+        return (rowIndex == highlightedCell[0]) && (columnIndex == highlightedCell[1]);
+    }
 
     function renderGameCells() {
         return boardState.map((currentRow, rowIndex) => {
@@ -32,6 +40,7 @@ export default function CellGrid(props) {
                         return <Cell isActive={isActive} 
                                     cellValue={cellValue}
                                     onClick={() => handleClick(rowIndex, columnIndex)}
+                                    isHighlighted={isCellHighlighted(rowIndex, columnIndex)}
                                 />
                     })
                 }

@@ -5,6 +5,7 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import GameController from "../game/GameController"
 import { CellStates, Players } from "../game/utils";
+import SoundPlayer from '../game/SoundPlayer';
 
 const useStyles = makeStyles(theme => ({
     gameStateText: {
@@ -13,6 +14,8 @@ const useStyles = makeStyles(theme => ({
         fontSize: "20px"
     }
 }));
+
+const REST_BASE_URL = 'http://localhost:5000';
 
 
 export default function GamePanel(props) { 
@@ -25,11 +28,22 @@ export default function GamePanel(props) {
     const [lossCount, setLossCount] = useState(0);
     const [drawCount, setDrawCount] = useState(0);
     const [playerSymbolAssignment, setPlayerSymbolAssignment] = useState();
+    const [soundPlayer, setSoundPlayer] = useState(new SoundPlayer(REST_BASE_URL, subjectID));
+    const [highlightedCell, setHighlightedCell] = useState();
+
+    function isHumanTurn() {
+        if (playerSymbolAssignment == null) {
+            return false;
+        }
+
+        return playerSymbolAssignment[currentSymbolTurn] === Players.HUMAN;
+    }
 
     function handleGridCellClick(rowIndex, columnIndex) {
         gameController.makeMove(currentSymbolTurn, rowIndex, columnIndex)
         toggleCurrentSymbolTurn();
         setGameController(gameController);
+
         if (gameController.isWinner())  {
             const winningSymbol = gameController.getWinner()
             const winner = playerSymbolAssignment[winningSymbol]
@@ -60,7 +74,7 @@ export default function GamePanel(props) {
     }
 
     function initializeGameController() {
-        setGameController(new GameController());
+        setGameController(new GameController(REST_BASE_URL, subjectID));
     }
 
     function initializePlayerAssignments() {
@@ -80,6 +94,7 @@ export default function GamePanel(props) {
         initializePlayerAssignments();
         initializeGameController();
         setCurrentSymbolTurn(CellStates.X);
+        setHighlightedCell();
     }
 
     function startNextGame() {
@@ -91,8 +106,7 @@ export default function GamePanel(props) {
         setCurrentGameNumber(newGameNumber);
     }
 
-    function selectRandomAvailableCell() {
-        // accumulate valid moves
+    function getRandomAvailableCell() {
         const availableMoves = gameController.getAvailableMoves();
 
         if (availableMoves.length === 0) {
@@ -100,14 +114,28 @@ export default function GamePanel(props) {
         }
 
         const randomIndex = Math.floor(Math.random() * availableMoves.length);
-        const selectedMove = availableMoves[randomIndex];
+        return availableMoves[randomIndex];
+    }
+
+    function selectRandomAvailableCell() {
+        const selectedMove = getRandomAvailableCell();
         handleGridCellClick(selectedMove[0], selectedMove[1])
     }
 
-    useEffect(initializeGame, []);
-    useEffect(initializeGame, [currentGameNumber]);
+    function makeSuggestion() {
+        if (!isHumanTurn()) {
+            return;
+        }
+        
+        const selectedMove = getRandomAvailableCell();
+        setHighlightedCell(selectedMove);
+        soundPlayer.triggerMoveSuggestionSound(selectedMove[0], selectedMove[1])
+    }
 
-    const continueButtonText = currentGameNumber === (numberOfGames + 1) ? "Finish" : "Next Game";
+    useEffect(initializeGame, [currentGameNumber]);
+    useEffect(makeSuggestion, [currentSymbolTurn, playerSymbolAssignment]);
+
+    const continueButtonText = (currentGameNumber === (numberOfGames + 1)) ? "Finish" : "Next Game";
     var disableContinueButton = true;
     var gameStateText;
     var boardState = [];
@@ -162,7 +190,11 @@ export default function GamePanel(props) {
                 <span>Wins: {winCount} Losses: {lossCount} Draws: {drawCount}</span>
             </Grid>
         </Grid>
-            <CellGrid boardState={boardState} handleClick={handleGridCellClick} isActive={boardIsActive}></CellGrid>
+            <CellGrid 
+                boardState={boardState} 
+                handleClick={handleGridCellClick} 
+                isActive={boardIsActive}
+                highlightedCell={highlightedCell}></CellGrid>
             <Grid container>
                 <Grid item xs={2}></Grid>
                 <Grid item xs={8}>

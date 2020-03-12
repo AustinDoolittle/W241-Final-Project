@@ -36,6 +36,8 @@ services:
             - 5001:5000
         volumes:
             - ./frontend:/app
+        environment:
+            REST_API_URL: localhost:5001
         depends_on: 
             - rest_api
 

@@ -39,13 +39,16 @@ const useStyles = makeStyles({
     clickable: {
         cursor: "pointer",
         backgroundColor: "#7bb2ff",
+    },
+    highlighted: {
+        backgroundColor: "#7fcd91"
     }
 });
 
 
 export default function Cell(props) {
     const classes = useStyles();
-    const { isActive, cellValue, onClick } = props;
+    const { isActive, isHighlighted, cellValue, onClick } = props;
 
     function renderCellContent()  {            
         var className = classes.cell
@@ -55,9 +58,13 @@ export default function Cell(props) {
             cellText = '';
             
             if (isActive) {
-                className += " " + classes.clickable 
+                className += " " + classes.clickable;
                 newProps.onClick = onClick;
                 cellText = '';
+            }
+
+            if (isHighlighted) {
+                className += " " + classes.highlighted;
             }
         }
 
