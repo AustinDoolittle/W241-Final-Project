@@ -1,4 +1,26 @@
 
+export class AudioPlaybackError extends Error {};
+
+class SoundWrapper {
+    constructor(url, mediaType) {
+        this.internalAudio = new Audio(url);
+        this.internalAudio.type = mediaType;
+        this.internalAudio.onerror = this.handleError;
+    }
+
+    play() {
+        this.internalAudio.play();
+    }
+
+    stop() {
+        this.internalAudio.pause();
+        this.internalAudio.currentTime = 0;
+    }
+
+    handleError() {
+        throw AudioPlaybackError();
+    }
+}
 
 export default class SoundPlayer {
     rowMap = ['top', 'center', 'bottom']
@@ -17,8 +39,7 @@ export default class SoundPlayer {
 
     triggerSound(filename) {
         if (!this.cache.hasOwnProperty(filename)) {
-            this.cache[filename] = new Audio(this.createSoundURL(filename));
-            this.cache[filename].type = `audio/${this.fileExtension}`
+            this.cache[filename] = new SoundWrapper(this.createSoundURL(filename), `audio/${this.fileExtension}`);
         }
 
         this.cache[filename].play();
@@ -26,8 +47,7 @@ export default class SoundPlayer {
 
     cancelSound() {
         for (let sound of Object.values(this.cache)) {
-            sound.pause();
-            sound.currentTime = 0;
+            sound.stop();
         }
     }
 
