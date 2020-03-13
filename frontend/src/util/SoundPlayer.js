@@ -12,10 +12,9 @@ class SoundWrapper {
         this.onReady = onReady
         this.isReady = false;
         this.internalAudio = new Audio(url);
+        this.internalAudio.addEventListener('error', (event) => this.handleError(event));
+        this.internalAudio.addEventListener('canplaythrough', (event) => this.handleCanPlayThrough(event));
         this.internalAudio.type = mediaType;
-        this.internalAudio.onerror = (event) => this.handleError(event);
-        this.internalAudio.oncanplaythrough = (event) => this.handleCanPlayThrough(event);
-        this.internalAudio.load();
     }
 
     handleCanPlayThrough(event) {
@@ -31,6 +30,7 @@ class SoundWrapper {
     }
 
     play() {
+        this.internalAudio.load();
         this.internalAudio.play();
     }
 
@@ -63,7 +63,6 @@ export default class SoundPlayer {
             }
         }
         this.expectedSoundCount = filenames.length
-        this.initializedSoundCount = 0;
 
         this.sounds = {};
         for (let filename of filenames) {
@@ -73,9 +72,11 @@ export default class SoundPlayer {
     }
 
     handleCanPlayThrough(obj) {
-        this.initializedSoundCount += 1;
+        if (Object.keys(this.sounds).length != this.expectedSoundCount) {
+            return;
+        }
 
-        if (this.initializedSoundCount == this.expectedSoundCount && this.onReady != null) {
+        if (Object.values(this.sounds).every((sound) => sound.isReady)) {
             this.onReady();
         }
     }

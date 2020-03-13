@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent';
@@ -38,8 +38,8 @@ export default function MainWindow(props) {
     const subjectID = params.get('subjectID');
 
     const [currentPanelIndex, setCurrentPanelIndex] = useState(0);
-    const [soundPlayer, setSoundPlayer] = useState(new SoundPlayer(REST_BASE_URL, subjectID, () => setIsInitializing(false)));
-    const [isInitializing, setIsInitializing] = useState(true);
+    const [soundPlayer, setSoundPlayer] = useState();
+    const [isInitializing, setIsInitializing] = useState(subjectID != null);
     const panelCount = 4;
 
     function advanceToNextPanel() {
@@ -75,8 +75,16 @@ export default function MainWindow(props) {
             return <PostTreatmentPanel {...newProps}/>;
         }
     }
-    
 
+    function initializeSounds() {
+        if (subjectID == null) { 
+            return
+        }
+
+        setSoundPlayer(new SoundPlayer(REST_BASE_URL, subjectID, () => setIsInitializing(false)));
+    }
+
+    useEffect(initializeSounds, []);
 
     return (
         <div>
