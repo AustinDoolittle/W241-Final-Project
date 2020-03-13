@@ -15,6 +15,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
+const randomMoveProbability = 0.5;
 
 export default function GamePanel(props) { 
     const { handleAdvance, numberOfGames, soundPlayer } = props;
@@ -30,6 +31,7 @@ export default function GamePanel(props) {
     const [isGameComplete, setIsGameComplete] = useState(false);
     const [gameStateText, setGameStateText] = useState("Initializing Tic-Tac-Toe...");
     const [boardIsActive, setBoardIsActive] = useState(false);
+    const [isOptimalMove, setIsOptimalMove] = useState(false);
 
     function isHumanTurn() {
         if (playerSymbolAssignment == null) {
@@ -97,7 +99,7 @@ export default function GamePanel(props) {
             if(playerSymbolAssignment[currentSymbolTurn] === Players.COMPUTER) {
                 // display the backdrop if it is the computer's turn
                 newGameStateText = "The computer is making their move...";
-                setTimeout(selectRandomAvailableCell, 1000);
+                setTimeout(handleComputerTurn, 1000);
                 setBoardIsActive(false);
             }
             else {
@@ -110,17 +112,20 @@ export default function GamePanel(props) {
         setGameStateText(newGameStateText);
     }
 
-    function toggleCurrentSymbolTurn() {
-        switch(currentSymbolTurn) {
+    function getOppositeSymbol(symbol) {
+        switch(symbol) {
             case CellStates.X:
-                setCurrentSymbolTurn(CellStates.O);
-                break;
+                return CellStates.O
             case CellStates.O:
-                setCurrentSymbolTurn(CellStates.X);
-                break;
+                return CellStates.X
             default:
                 throw new TypeError('Unsupported player value: ' + currentSymbolTurn)
         }
+    }
+
+    function toggleCurrentSymbolTurn() {
+        const newSymbol = getOppositeSymbol(currentSymbolTurn);
+        setCurrentSymbolTurn(newSymbol);
     }
 
     function initializeGameController() {
@@ -161,6 +166,20 @@ export default function GamePanel(props) {
         setCurrentGameNumber(newGameNumber);
     }
 
+    function getMove() {
+        var selectedMove;
+        if (Math.random() > randomMoveProbability) {
+            selectedMove = getOptimalMove();
+            setIsOptimalMove(true);
+        }
+        else {
+            selectedMove = getRandomAvailableCell();
+            setIsOptimalMove(false);
+        }
+
+        return selectedMove;
+    }
+
     function getRandomAvailableCell() {
         const availableMoves = gameController.getAvailableMoves();
 
@@ -172,8 +191,8 @@ export default function GamePanel(props) {
         return availableMoves[randomIndex];
     }
 
-    function selectRandomAvailableCell() {
-        const selectedMove = getRandomAvailableCell();
+    function handleComputerTurn() {
+        const selectedMove = getMove();
         handleGridCellClick(selectedMove[0], selectedMove[1])
     }
 
@@ -183,9 +202,58 @@ export default function GamePanel(props) {
             return;
         }
         
-        const selectedMove = getRandomAvailableCell();
+        var selectedMove = getMove();
+
+        // const selectedMove = getRandomAvailableCell();
         setHighlightedCell(selectedMove);
         soundPlayer.triggerMoveSuggestionSound(selectedMove[0], selectedMove[1])
+    }
+
+    function getOptimalMove() {
+        function minimax(controller, symbol) {
+            /* A super simple implementation of minimax optimization */
+
+            // base case
+            if (controller.isGameComplete()) {
+                if (controller.areAllMovesExhausted()) {
+                    return 0;
+                }
+                else if (controller.getWinner() == currentSymbolTurn) {
+                    return 1;
+                }
+                else {
+                    return -1;
+                }
+            }
+
+
+            var bestVal = symbol === currentSymbolTurn ? -1000 : 1000;
+            const compareFunc = symbol === currentSymbolTurn ? Math.max : Math.min
+            const newSymbol = getOppositeSymbol(symbol);
+            for (let move of controller.getAvailableMoves()) {
+                const controllerCopy = controller.copy();
+                controllerCopy.makeMove(symbol, move[0], move[1]);
+                const newVal = minimax(controllerCopy, newSymbol);
+                bestVal = compareFunc(newVal, bestVal);
+            }
+
+            return bestVal;
+        }
+
+        var bestVal = null;
+        var bestMove = null;
+        const newSymbol = getOppositeSymbol(currentSymbolTurn);
+        for (let move of gameController.getAvailableMoves()) {
+            const controllerCopy = gameController.copy();
+            controllerCopy.makeMove(currentSymbolTurn, move[0], move[1]);
+            const newVal = minimax(controllerCopy, newSymbol);
+            if (bestVal == null || newVal > bestVal) {
+                bestVal = newVal;
+                bestMove = move;
+            }
+        }
+
+        return bestMove;
     }
 
     useEffect(initializeGame, [currentGameNumber]);
@@ -200,7 +268,9 @@ export default function GamePanel(props) {
             <Grid item xs={6}>
             </Grid>
             <Grid item xs={3}>
-                <span>Wins: {winLossDrawCounter.getWinCount()} Losses: {winLossDrawCounter.getLossCount()} Draws: {winLossDrawCounter.getDrawCount()}</span>
+                <span>
+                    Wins: {winLossDrawCounter.getWinCount()} Losses: {winLossDrawCounter.getLossCount()} Draws: {winLossDrawCounter.getDrawCount()}
+                </span>
             </Grid>
         </Grid>
             <CellGrid 

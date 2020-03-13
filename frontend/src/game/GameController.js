@@ -143,4 +143,10 @@ export default class GameController {
 
         this.boardState[rowIndex][columnIndex] = newState;
     }
+
+    copy() {
+        const newController = new GameController();
+        newController.boardState = this.boardState.map((row) => row.slice());
+        return newController;
+    }
 }
