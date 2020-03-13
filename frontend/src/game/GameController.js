@@ -58,6 +58,10 @@ export default class GameController {
         return true;
     }
 
+    isGameComplete() {
+        return this.areAllMovesExhausted() || this.isWinner()
+    }
+
     isWinner() {
         return this.getWinningSequences().length !== 0;
     }

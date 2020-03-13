@@ -29,7 +29,7 @@ export default function CellGrid(props) {
             return false;
         }
 
-        return (rowIndex == highlightedCell[0]) && (columnIndex == highlightedCell[1]);
+        return (rowIndex === highlightedCell[0]) && (columnIndex === highlightedCell[1]);
     }
 
     function renderGameCells() {

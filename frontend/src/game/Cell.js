@@ -61,10 +61,10 @@ export default function Cell(props) {
                 className += " " + classes.clickable;
                 newProps.onClick = onClick;
                 cellText = '';
-            }
 
-            if (isHighlighted) {
-                className += " " + classes.highlighted;
+                if (isHighlighted) {
+                    className += " " + classes.highlighted;
+                }
             }
         }
 
