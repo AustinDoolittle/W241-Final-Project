@@ -17,6 +17,9 @@ class SoundFileRetriever:
         self.sound_file_base_dir = sound_file_base_dir
 
     def resolve_filename(self, filename, assignment_status):
+        if filename == 'select_letter_b.mp3':
+            return os.path.join(self.sound_file_base_dir, filename)
+        
         subdir_name = self._DIRNAME_LUT[assignment_status]
 
         return os.path.join(self.sound_file_base_dir, subdir_name, filename)

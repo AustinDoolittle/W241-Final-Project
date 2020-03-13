@@ -11,6 +11,7 @@ import PreTreatmentPanel from './panels/PreTreatmentPanel';
 import PostTreatmentPanel from './panels/PostTreatmentPanel';
 import ErrorPanel from './panels/ErrorPanel';
 import SoundPlayer from './util/SoundPlayer';
+import AudioTestPanel from './panels/AudioTestPanel';
 
 const useStyles = makeStyles( theme => ({
     card: {
@@ -40,7 +41,7 @@ export default function MainWindow(props) {
     const [currentPanelIndex, setCurrentPanelIndex] = useState(0);
     const [soundPlayer, setSoundPlayer] = useState();
     const [isInitializing, setIsInitializing] = useState(subjectID != null);
-    const panelCount = 4;
+    const panelCount = 5;
 
     function advanceToNextPanel() {
         const newIndex = currentPanelIndex + 1
@@ -65,9 +66,12 @@ export default function MainWindow(props) {
             return <LandingPanel {...newProps}/>;
         }
         else if (currentPanelIndex === 1) {
-            return <PreTreatmentPanel {...newProps}/>;
+            return <AudioTestPanel {...newProps} />;
         }
         else if (currentPanelIndex === 2) {
+            return <PreTreatmentPanel {...newProps}/>;
+        }
+        else if (currentPanelIndex === 3) {
             return <GamePanel numberOfGames={numberOfGames} {...newProps}/>;
         }
         else {

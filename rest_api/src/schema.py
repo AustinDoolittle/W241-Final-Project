@@ -16,6 +16,7 @@ class UserActionSchema(Schema):
     subject_id = fields.Int(required=True)
     player_symbol = fields.String(required=True, validate=validate.OneOf(_VALID_PLAYER_VALUES))
     game_number = fields.Int(required=True)
+    move_number = fields.Int(required=True)
     board_state_before_turn = fields.List(
         fields.List(
             fields.String(required=True, validate=validate.OneOf(_VALID_CELL_VALUES)), 
@@ -25,3 +26,6 @@ class UserActionSchema(Schema):
     )
     move_taken = fields.Nested(CellSelectionSchema)
     suggested_move = fields.Nested(CellSelectionSchema)
+    is_suggested_move_optimal = fields.Boolean(required=True)
+
+

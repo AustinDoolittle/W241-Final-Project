@@ -30,7 +30,7 @@ class SoundWrapper {
     }
 
     play() {
-        this.internalAudio.load();
+        // this.internalAudio.load();
         this.internalAudio.play();
     }
 
@@ -50,13 +50,14 @@ export default class SoundPlayer {
     fileExtension = 'mp3'
     mediaType = `audio/${this.fileExtension}`
     testSoundFilename = `test.${this.fileExtension}`;
+    selectBFilename = `select_letter_b.${this.fileExtension}`;
 
     constructor(baseURL, subjectID, onReady = null) {
         this.isReady = false;
         this.onReady = onReady;
         this.baseURL = baseURL;
-        this.subjectID = subjectID
-        const filenames = [this.testSoundFilename]
+        this.subjectID = subjectID;
+        const filenames = [this.testSoundFilename, this.selectBFilename];
         for (let rowIndex = 0; rowIndex < this.rowMap.length; rowIndex++) {
             for (let columnIndex = 0; columnIndex < this.columnMap.length; columnIndex++) {
                 filenames.push(this.createMoveFilename(rowIndex, columnIndex));
@@ -93,6 +94,10 @@ export default class SoundPlayer {
         for (let sound of Object.values(this.sounds)) {
             sound.stop();
         }
+    }
+
+    triggerSelectBSound() {
+        this.triggerSound(this.selectBFilename);
     }
 
     triggerTestSound() {
