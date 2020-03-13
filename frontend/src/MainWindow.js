@@ -88,7 +88,7 @@ export default function MainWindow(props) {
     return (
         <div>
             <Card className={classes.card}>
-                <CardHeader title="UC Berkeley MIDS - W241 Experiment" />
+                <CardHeader title="UC Berkeley MIDS" />
                 <CardContent>
                     {renderCurrentPanel()}
                 </CardContent>
