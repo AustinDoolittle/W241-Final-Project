@@ -1,5 +1,9 @@
 import React from "react";
 
 export default function PostTreatmentPanel() {
-    return <p>Here is where I'll thank you for taking part in our study and direct you to the post treatment survey</p>
+    return (
+        <p>
+            Thank you for playing. Now, please complete the post-game survey by clicking this <a href="https://forms.gle/Reuxoh4YjZMUugmZ8">link</a>.
+        </p>
+    )
 }

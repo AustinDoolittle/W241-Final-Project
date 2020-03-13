@@ -14,8 +14,12 @@ export default function PreTreatmentInformationPanel(props) {
     const { handleAdvance } = props;
     return (
         <div>
-        <p>Don't screw up</p>
-        <Button variant="contained" onClick={handleAdvance} className={classes.continueButton}>Continue</Button>
+            <p>
+                You will be asked to play 5 simple games of tic-tac-toe. Before each of your moves, 
+                you will hear a speaker suggest a move. These moves may or may not be optimal and you 
+                are not required to follow their suggestion. Have fun playing!
+            </p>
+            <Button variant="contained" onClick={handleAdvance} className={classes.continueButton}>Continue</Button>
         </div>
     )
 };
