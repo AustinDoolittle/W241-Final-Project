@@ -4,8 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import GameController from "../game/GameController"
-import { CellStates, Players } from "../game/utils";
-import SoundPlayer from '../game/SoundPlayer';
+import { CellStates, Players } from "../util/enums";
 import WinLossDrawCounter from '../game/WinLossDrawCounter';
 
 const useStyles = makeStyles(theme => ({
@@ -16,11 +15,9 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const REST_BASE_URL = 'http://localhost:5000';
-
 
 export default function GamePanel(props) { 
-    const { handleAdvance, numberOfGames, subjectID } = props;
+    const { handleAdvance, numberOfGames, subjectID, soundPlayer } = props;
     const classes = useStyles(props);
     const [currentGameNumber, setCurrentGameNumber] = useState(0);
     const [currentSymbolTurn, setCurrentSymbolTurn] = useState(CellStates.X);
@@ -28,7 +25,6 @@ export default function GamePanel(props) {
     const [boardState, setBoardState] = useState([]);
     const [winLossDrawCounter, setWinLossDrawCounter] = useState(new WinLossDrawCounter());
     const [playerSymbolAssignment, setPlayerSymbolAssignment] = useState();
-    const [soundPlayer, setSoundPlayer] = useState(new SoundPlayer(REST_BASE_URL, subjectID));
     const [highlightedCell, setHighlightedCell] = useState();
     const [continueButtonText, setContinueButtonText] = useState('Next Game');
     const [isGameComplete, setIsGameComplete] = useState(false);
@@ -128,7 +124,7 @@ export default function GamePanel(props) {
     }
 
     function initializeGameController() {
-        setGameController(new GameController(REST_BASE_URL, subjectID));
+        setGameController(new GameController());
     }
 
     function initializePlayerAssignments() {

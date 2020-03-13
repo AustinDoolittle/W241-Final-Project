@@ -8,6 +8,7 @@ import LandingPanel from './panels/LandingPanel';
 import PreTreatmentPanel from './panels/PreTreatmentPanel';
 import PostTreatmentPanel from './panels/PostTreatmentPanel';
 import ErrorPanel from './panels/ErrorPanel';
+import SoundPlayer from './util/SoundPlayer';
 
 const useStyles = makeStyles({
     card: {
@@ -22,15 +23,18 @@ const useStyles = makeStyles({
 })
 
 const numberOfGames = 5;
+const REST_BASE_URL = 'http://localhost:5000';
 
 export default function MainWindow(props) {
     const classes = useStyles(props);
-    const [currentPanelIndex, setCurrentPanelIndex] = useState(0);
-    const panelCount = 4;
-
-    const search =props.location.search;
+    const search = props.location.search;
     const params = new URLSearchParams(search);
     const subjectID = params.get('subjectID');
+
+    const [currentPanelIndex, setCurrentPanelIndex] = useState(0);
+    const [soundPlayer, setSoundPlayer] = useState(new SoundPlayer(REST_BASE_URL, subjectID));
+    const panelCount = 4;
+
 
     function advanceToNextPanel() {
         const newIndex = currentPanelIndex + 1
@@ -44,7 +48,8 @@ export default function MainWindow(props) {
     function renderCurrentPanel() {
         const newProps = {
             handleAdvance: advanceToNextPanel,
-            subjectID: subjectID
+            subjectID: subjectID,
+            soundPlayer: soundPlayer
         }
 
         if (subjectID == null) {

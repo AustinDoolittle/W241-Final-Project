@@ -1,4 +1,4 @@
-import {CellStates} from './utils'
+import {CellStates} from '../util/enums'
 
 class InvalidMoveError extends Error {};
 
