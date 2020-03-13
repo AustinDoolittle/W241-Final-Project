@@ -10,6 +10,7 @@ services:
             POSTGRES_PASSWORD: CHANGEME
         volumes:
             - db-data:/var/lib/postgresql/data
+        restart: always
 
     rest_api:
         build:
@@ -26,6 +27,7 @@ services:
             - postgres
         links:
             - "postgres"
+        restart: always
 
     frontend:
         build:
@@ -40,6 +42,7 @@ services:
             REST_API_URL: localhost:5001
         depends_on: 
             - rest_api
+        restart: always
 
 volumes:
     db-data:

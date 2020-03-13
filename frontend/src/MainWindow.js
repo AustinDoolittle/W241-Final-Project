@@ -54,7 +54,6 @@ export default function MainWindow(props) {
     function renderCurrentPanel() {
         const newProps = {
             handleAdvance: advanceToNextPanel,
-            subjectID: subjectID,
             soundPlayer: soundPlayer
         }
 

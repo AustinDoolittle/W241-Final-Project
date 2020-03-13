@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function GamePanel(props) { 
-    const { handleAdvance, numberOfGames, subjectID, soundPlayer } = props;
+    const { handleAdvance, numberOfGames, soundPlayer } = props;
     const classes = useStyles(props);
     const [currentGameNumber, setCurrentGameNumber] = useState(0);
     const [currentSymbolTurn, setCurrentSymbolTurn] = useState(CellStates.X);
