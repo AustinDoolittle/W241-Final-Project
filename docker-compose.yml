@@ -49,6 +49,7 @@ services:
             - rest_api
         volumes:
             - ./docker/files/nginx.conf:/etc/nginx/nginx.conf
+            - /etc/letsencrypt/live/doolittle.dev/:/etc/ssl/doolittle.dev/
         links:
             - frontend:frontend
             - rest_api:rest_api

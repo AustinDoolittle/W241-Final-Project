@@ -75,7 +75,7 @@ export default class SoundPlayer {
     }
 
     handleCanPlayThrough(obj) {
-        if (Object.keys(this.sounds).length != this.expectedSoundCount) {
+        if (Object.keys(this.sounds).length !== this.expectedSoundCount) {
             return;
         }
 

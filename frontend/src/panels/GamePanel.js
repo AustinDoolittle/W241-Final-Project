@@ -218,7 +218,7 @@ export default function GamePanel(props) {
                 if (controller.areAllMovesExhausted()) {
                     return 0;
                 }
-                else if (controller.getWinner() == currentSymbolTurn) {
+                else if (controller.getWinner() === currentSymbolTurn) {
                     return 1;
                 }
                 else {

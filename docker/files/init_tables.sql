@@ -32,5 +32,5 @@ CREATE TABLE tblResults (
     move_taken_row INT NOT NULL,
     move_taken_column INT NOT NULL,
     PRIMARY KEY(result_id), 
-    FOREIGN KEY(subject_id) REFERENCES tblSubjects(subject_id);
+    FOREIGN KEY(subject_id) REFERENCES tblSubjects(subject_id)
 );

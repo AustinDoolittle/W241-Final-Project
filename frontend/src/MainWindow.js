@@ -3,8 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import GamePanel from './panels/GamePanel';
 import LandingPanel from './panels/LandingPanel';
 import PreTreatmentPanel from './panels/PreTreatmentPanel';
@@ -140,9 +138,7 @@ export default function MainWindow(props) {
         }
 
         const noopHandler = () => {};
-        const errorHandler = (event) => {
-            this.onSoundPlayerError(event);
-        }
+        const errorHandler = (event) => onSoundPlayerError(event)
 
         setSoundPlayer(new SoundPlayer(REST_BASE_URL, subjectID, noopHandler, errorHandler));
     }
@@ -159,7 +155,7 @@ export default function MainWindow(props) {
             })
             .then(response => response.json())
             .then(data => {
-                const notStartedAndNotPilot = data['experiment_status'] == ExperimentStatus.NOT_STARTED && data['is_pilot'] == IS_PILOT;
+                const notStartedAndNotPilot = data['experiment_status'] === ExperimentStatus.NOT_STARTED && data['is_pilot'] === IS_PILOT;
                 setIsSubjectElligible(notStartedAndNotPilot);
 
             })
