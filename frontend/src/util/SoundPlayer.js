@@ -1,18 +1,10 @@
-
-export class AudioPlaybackError extends Error {
-    constructor(obj) {
-        super();
-        this.obj = obj;
-    }
-};
-
 class SoundWrapper {
-    constructor(url, mediaType, onReady=null) {
+    constructor(url, mediaType, onReady=null, onError=null) {
         this.url = url
         this.onReady = onReady
         this.isReady = false;
         this.internalAudio = new Audio(url);
-        this.internalAudio.addEventListener('error', (event) => this.handleError(event));
+        this.internalAudio.addEventListener('error', onError);
         this.internalAudio.addEventListener('canplaythrough', (event) => this.handleCanPlayThrough(event));
         this.internalAudio.type = mediaType;
         this.internalAudio.load()
@@ -41,7 +33,7 @@ class SoundWrapper {
     }
 
     handleError(event) {
-        throw new AudioPlaybackError(this);
+        console.log(event);
     }
 }
 
@@ -53,9 +45,10 @@ export default class SoundPlayer {
     testSoundFilename = `test.${this.fileExtension}`;
     selectBFilename = `select_letter_b.${this.fileExtension}`;
 
-    constructor(baseURL, subjectID, onReady = null) {
+    constructor(baseURL, subjectID, {onReady, onError}={}) {
         this.isReady = false;
         this.onReady = onReady;
+        this.onError = onError;
         this.baseURL = baseURL;
         this.subjectID = subjectID;
         const filenames = [this.testSoundFilename, this.selectBFilename];
@@ -69,8 +62,16 @@ export default class SoundPlayer {
         this.sounds = {};
         for (let filename of filenames) {
             const url = this.createSoundURL(filename);
-            this.sounds[filename] = new SoundWrapper(url, this.mediaType, (event) => this.handleCanPlayThrough(event));
+            this.sounds[filename] = new SoundWrapper(url, this.mediaType, (event) => this.handleCanPlayThrough(event), (event) => this.handleError(event));
         }
+    }
+
+    handleError(event) {
+        if (this.onError == null) {
+            return
+        }
+
+        this.onError(event);
     }
 
     handleCanPlayThrough(obj) {

@@ -32,7 +32,7 @@ const useStyles = makeStyles( theme => ({
 }));
 
 const numberOfGames = 5;
-const REST_BASE_URL = 'http://localhost:5000';
+const REST_BASE_URL = `http://${window.location.hostname}/api`;
 const IS_PILOT = true;
 
 export default function MainWindow(props) {
@@ -55,6 +55,12 @@ export default function MainWindow(props) {
         }
 
         setCurrentPanelIndex(newIndex);
+    }
+
+    function onSoundPlayerError(event) {
+        console.log(event);
+        setIsError(true);
+        setErrorText(CONNECTION_ERROR_TEXT);
     }
 
     function postExperimentStarted() {
@@ -133,7 +139,12 @@ export default function MainWindow(props) {
             return
         }
 
-        setSoundPlayer(new SoundPlayer(REST_BASE_URL, subjectID));
+        const noopHandler = () => {};
+        const errorHandler = (event) => {
+            this.onSoundPlayerError(event);
+        }
+
+        setSoundPlayer(new SoundPlayer(REST_BASE_URL, subjectID, noopHandler, errorHandler));
     }
 
     function retrieveSubjectAssignment() {
@@ -154,7 +165,7 @@ export default function MainWindow(props) {
             })
             .catch(error => {
                 setIsError(true);
-                setErrorText(CONNECTION_ERROR_TEXT);
+                setErrorText(BAD_LINK_ERROR_TEXT);
                 console.log(error);
             })
     }
