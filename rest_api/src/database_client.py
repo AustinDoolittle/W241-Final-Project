@@ -22,7 +22,6 @@ class DatabaseClient():
 
     def _execute_sql(self, sql_template, cursor=None, **kwargs):
         sql_string = self._construct_query(sql_template, **kwargs)
-        print(sql_string.as_string(self._client))
 
         local_cursor = not cursor
         if local_cursor:
@@ -81,7 +80,7 @@ class DatabaseClient():
     def complete_experiment(self, subject_id: str):
         self._set_experiment_status(subject_id, ExperimentStatus.Complete)
 
-    def store_move(self, subject_id: int, suggested_move: dict, move_taken: dict, board_state_before_turn: dict, game_number: int, player_symbol: str):
+    def store_move(self, subject_id: int, suggested_move: dict, move_taken: dict, board_state_before_turn: dict, game_number: int, move_number: int, is_suggested_move_optimal: bool, player_symbol: str):
         self._execute_sql(
             STORE_MOVE_QUERY_TEMPLATE,
             subject_id=subject_id,
@@ -100,6 +99,8 @@ class DatabaseClient():
             suggested_move_column=suggested_move['column'],
             move_taken_row=move_taken['row'],
             move_taken_column=move_taken['column'],
+            move_number=move_number,
+            is_suggested_move_optimal=is_suggested_move_optimal,
         )
 
     def set_experiment_status(self, subject_id: str, experiment_status: ExperimentStatus):

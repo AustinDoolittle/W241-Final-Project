@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
 const randomMoveProbability = 0.5;
 
 export default function GamePanel(props) { 
-    const { handleAdvance, numberOfGames, soundPlayer } = props;
+    const { handleAdvance, numberOfGames, soundPlayer, handlePlayerMove } = props;
     const classes = useStyles(props);
     const [currentGameNumber, setCurrentGameNumber] = useState(0);
     const [currentSymbolTurn, setCurrentSymbolTurn] = useState(CellStates.X);
@@ -32,6 +32,7 @@ export default function GamePanel(props) {
     const [gameStateText, setGameStateText] = useState("Initializing Tic-Tac-Toe...");
     const [boardIsActive, setBoardIsActive] = useState(false);
     const [isOptimalMove, setIsOptimalMove] = useState(false);
+    const [moveNumber, setMoveNumber] = useState(0);
 
     function isHumanTurn() {
         if (playerSymbolAssignment == null) {
@@ -41,8 +42,31 @@ export default function GamePanel(props) {
         return playerSymbolAssignment[currentSymbolTurn] === Players.HUMAN;
     }
 
+    function triggerMoveHandler(rowIndex, columnIndex) {
+        const moveObject = {
+            player_symbol: currentSymbolTurn,
+            game_number: currentGameNumber,
+            move_number: moveNumber,
+            board_state_before_turn: boardState,
+            move_taken: {
+                row: rowIndex,
+                column: columnIndex
+            },
+            suggested_move: {
+                row: highlightedCell[0],
+                column: highlightedCell[1]
+            },
+            is_suggested_move_optimal: isOptimalMove
+        }
+
+        handlePlayerMove(moveObject)
+    }
+
     function handleGridCellClick(rowIndex, columnIndex) {
-        gameController.makeMove(currentSymbolTurn, rowIndex, columnIndex)
+        if (isHumanTurn()) {
+            triggerMoveHandler(rowIndex, columnIndex);
+        }
+        gameController.makeMove(currentSymbolTurn, rowIndex, columnIndex);
         toggleCurrentSymbolTurn();
         setGameController(gameController);
 
@@ -96,6 +120,7 @@ export default function GamePanel(props) {
             }
         }
         else {
+            setMoveNumber(moveNumber + 1);
             if(playerSymbolAssignment[currentSymbolTurn] === Players.COMPUTER) {
                 // display the backdrop if it is the computer's turn
                 newGameStateText = "The computer is making their move...";
@@ -150,6 +175,7 @@ export default function GamePanel(props) {
         initializeGameController();
         setCurrentSymbolTurn(CellStates.X);
         setIsGameComplete(false);
+        setMoveNumber(0);
         setHighlightedCell();
     }
 

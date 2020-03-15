@@ -8,6 +8,7 @@ STORE_MOVE_QUERY_TEMPLATE = """
 INSERT INTO tblResults (
     subject_id,
     game_number,
+    move_number,
     player_symbol,
     board_state_top_left,
     board_state_top_middle,
@@ -20,11 +21,13 @@ INSERT INTO tblResults (
     board_state_bottom_right,
     suggested_move_row,
     suggested_move_column,
+    is_suggested_move_optimal,
     move_taken_row,
     move_taken_column
 ) VALUES (
     {subject_id},
     {game_number},
+    {move_number},
     {player_symbol},
     {board_state_top_left},
     {board_state_top_middle},
@@ -37,6 +40,7 @@ INSERT INTO tblResults (
     {board_state_bottom_right},
     {suggested_move_row},
     {suggested_move_column},
+    {is_suggested_move_optimal},
     {move_taken_row},
     {move_taken_column}
 );

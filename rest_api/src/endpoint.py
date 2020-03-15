@@ -45,11 +45,11 @@ def get_subject(subject_id):
 
     return jsonify(result), 200, _JSON_CONTENT_TYPE
 
-@app.route('/move', methods=['POST'])
-def set_move():
+@app.route('/subject/<subject_id>/move', methods=['POST'])
+def set_move(subject_id):
     user_action = UserActionSchema().load(request.get_json())
     db = get_db_client()
-    db.store_move(**user_action)
+    db.store_move(subject_id=subject_id, **user_action)
 
     return "{'status': OK}", 200, _JSON_CONTENT_TYPE
 

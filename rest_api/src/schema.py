@@ -13,7 +13,6 @@ class CellSelectionSchema(Schema):
 
 
 class UserActionSchema(Schema):
-    subject_id = fields.Int(required=True)
     player_symbol = fields.String(required=True, validate=validate.OneOf(_VALID_PLAYER_VALUES))
     game_number = fields.Int(required=True)
     move_number = fields.Int(required=True)

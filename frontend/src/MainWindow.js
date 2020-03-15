@@ -61,6 +61,17 @@ export default function MainWindow(props) {
         setErrorText(CONNECTION_ERROR_TEXT);
     }
 
+    function postMove(move) {
+        fetch(REST_BASE_URL + `/subject/${subjectID}/move`, {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(move)
+        })
+    }
+
     function postExperimentStarted() {
         fetch(REST_BASE_URL + `/subject/${subjectID}/start_experiment`, {
             method: "POST",
@@ -125,7 +136,7 @@ export default function MainWindow(props) {
         }
         else if (currentPanelIndex === 3) {
             newProps.handleAdvance = handleGamePanelAdvance;
-            return <GamePanel numberOfGames={numberOfGames} {...newProps}/>;
+            return <GamePanel handlePlayerMove={postMove} numberOfGames={numberOfGames} {...newProps}/>;
         }
         else {
             return <PostTreatmentPanel {...newProps}/>;
