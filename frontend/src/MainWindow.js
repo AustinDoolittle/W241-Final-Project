@@ -30,7 +30,7 @@ const useStyles = makeStyles( theme => ({
 }));
 
 const numberOfGames = 5;
-const REST_BASE_URL = `http://${window.location.hostname}/api`;
+const REST_BASE_URL = `https://${window.location.hostname}/api`;
 const IS_PILOT = true;
 
 export default function MainWindow(props) {
