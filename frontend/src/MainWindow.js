@@ -33,6 +33,7 @@ const useStyles = makeStyles( theme => ({
 
 const numberOfGames = 5;
 const REST_BASE_URL = 'http://localhost:5000';
+const IS_PILOT = true;
 
 export default function MainWindow(props) {
     const classes = useStyles(props);
@@ -146,7 +147,11 @@ export default function MainWindow(props) {
                 }
             })
             .then(response => response.json())
-            .then(data => setIsSubjectElligible(data['experiment_status'] == ExperimentStatus.NOT_STARTED))
+            .then(data => {
+                const notStartedAndNotPilot = data['experiment_status'] == ExperimentStatus.NOT_STARTED && data['is_pilot'] == IS_PILOT;
+                setIsSubjectElligible(notStartedAndNotPilot);
+
+            })
             .catch(error => {
                 setIsError(true);
                 setErrorText(CONNECTION_ERROR_TEXT);
