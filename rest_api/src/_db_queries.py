@@ -1,5 +1,5 @@
 GET_SUBJECT_QUERY_TEMPLATE = """
-SELECT experiment_status, assignment_status 
+SELECT experiment_status, assignment_status, is_pilot, gender, email_address
 FROM tblSubjects 
 WHERE subject_id = {subject_id};
 """
@@ -45,6 +45,5 @@ INSERT INTO tblResults (
 SET_EXPERIMENT_STATUS_QUERY_TEMPLATE = """
 UPDATE tblSubjects
 SET experiment_status={experiment_status} 
-FROM tblSubjects 
 WHERE subject_id = {subject_id};
 """

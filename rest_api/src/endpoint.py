@@ -53,6 +53,20 @@ def set_move():
 
     return "{'status': OK}", 200, _JSON_CONTENT_TYPE
 
+@app.route('/subject/<subject_id>/start_experiment', methods=['POST'])
+def start_experiment(subject_id):
+    db_interface = get_db_client()
+    db_interface.start_experiment(subject_id)
+
+    return "OK", 200
+
+@app.route('/subject/<subject_id>/complete_experiment', methods=['POST'])
+def complete_experiment(subject_id):
+    db_interface = get_db_client()
+    db_interface.complete_experiment(subject_id)
+
+    return "OK", 200
+
 @app.route('/sounds/<sound_file>', methods=["GET"])
 def get_suggestion_audio_clip(sound_file):
     if "subjectID" not in request.args:
@@ -63,7 +77,7 @@ def get_suggestion_audio_clip(sound_file):
     sound_file_retriever = get_sound_file_retriever()
 
     subject_information = db_interface.get_subject(subject_id)
-    assignment_status = subject_information['assignment_status']
+    assignment_status = AssignmentStatus(subject_information['assignment_status'])
     
     if assignment_status == AssignmentStatus.NotAssigned:
         return "This subject has not been assigned to an experiment group yet", 400

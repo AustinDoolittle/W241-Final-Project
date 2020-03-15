@@ -9,3 +9,9 @@ export const Players = {
     HUMAN: "human",
     COMPUTER: "computer"
 }
+
+export const ExperimentStatus = {
+    NOT_STARTED: 'N',
+    INCOMPLETE: 'I',
+    COMPLETE: 'C'
+}

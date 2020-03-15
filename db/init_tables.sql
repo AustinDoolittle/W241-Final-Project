@@ -1,8 +1,11 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE tblSubjects (
-    subject_id SERIAL,
+    subject_id UUID NOT NULL DEFAULT uuid_generate_v1() ,
     experiment_status VARCHAR(2) NOT NULL,
     assignment_status VARCHAR(2) NOT NULL,
     is_pilot BOOLEAN NOT NULL,
+    gender VARCHAR(1) NOT NULL,
     email_address VARCHAR(256) NOT NULL,
     
     PRIMARY KEY(subject_id)
@@ -10,7 +13,7 @@ CREATE TABLE tblSubjects (
 
 CREATE TABLE tblResults (
     result_id SERIAL,
-    subject_id INT NOT NULL,
+    subject_id UUID NOT NULL,
     game_number INT NOT NULL,
     move_number INT NOT NULL,
     player_symbol VARCHAR(2) NOT NULL,
@@ -29,5 +32,5 @@ CREATE TABLE tblResults (
     move_taken_row INT NOT NULL,
     move_taken_column INT NOT NULL,
     PRIMARY KEY(result_id), 
-    FOREIGN KEY(subject_id) REFERENCES tblSubjects(subject_id)
+    FOREIGN KEY(subject_id) REFERENCES tblSubjects(subject_id) ON DELETE SET NULL;
 );

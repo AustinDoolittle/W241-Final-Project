@@ -12,6 +12,8 @@ import PostTreatmentPanel from './panels/PostTreatmentPanel';
 import ErrorPanel from './panels/ErrorPanel';
 import SoundPlayer from './util/SoundPlayer';
 import AudioTestPanel from './panels/AudioTestPanel';
+import { ExperimentStatus } from './util/enums';
+import { BAD_LINK_ERROR_TEXT, CONNECTION_ERROR_TEXT, USER_INELLIGIBLE_ERROR_TEXT } from './util/errorTextConstants';
 
 const useStyles = makeStyles( theme => ({
     card: {
@@ -36,11 +38,13 @@ export default function MainWindow(props) {
     const classes = useStyles(props);
     const search = props.location.search;
     const params = new URLSearchParams(search);
-    const subjectID = params.get('subjectID');
 
     const [currentPanelIndex, setCurrentPanelIndex] = useState(0);
     const [soundPlayer, setSoundPlayer] = useState();
-    const [isInitializing, setIsInitializing] = useState(subjectID != null);
+    const [subjectID, setSubjectID] = useState(params.get('subjectID'))
+    const [isError, setIsError] = useState(false);
+    const [errorText, setErrorText] = useState()
+    const [isSubjectElligible, setIsSubjectElligible] = useState();
     const panelCount = 5;
 
     function advanceToNextPanel() {
@@ -52,17 +56,60 @@ export default function MainWindow(props) {
         setCurrentPanelIndex(newIndex);
     }
 
+    function postExperimentStarted() {
+        fetch(REST_BASE_URL + `/subject/${subjectID}/start_experiment`, {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .catch(error => {
+            setIsError(true);
+            setErrorText(CONNECTION_ERROR_TEXT);
+            console.log(error);
+        })
+    }
+
+    function postExperimentComplete() {
+        fetch(REST_BASE_URL + `/subject/${subjectID}/complete_experiment`, {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json'
+            }
+        })
+        .catch(error => {
+            setIsError(true);
+            setErrorText(CONNECTION_ERROR_TEXT);
+            console.log(error);
+        })
+    }
+
+    function handleLandingPanelAdvance() {
+        postExperimentStarted();
+        advanceToNextPanel();
+    }
+
+    function handleGamePanelAdvance() {
+        postExperimentComplete();
+        advanceToNextPanel();
+    }
+
     function renderCurrentPanel() {
         const newProps = {
             handleAdvance: advanceToNextPanel,
             soundPlayer: soundPlayer
         }
 
-        if (subjectID == null) {
-            return <ErrorPanel {...newProps} />
+        if (subjectID == null || isError) {
+            if (soundPlayer != null) {
+                soundPlayer.cancelSound()
+            }
+
+            return <ErrorPanel errorText={errorText} {...newProps} />
         }
 
         if (currentPanelIndex === 0) {
+            newProps.handleAdvance = handleLandingPanelAdvance;
             return <LandingPanel {...newProps}/>;
         }
         else if (currentPanelIndex === 1) {
@@ -72,6 +119,7 @@ export default function MainWindow(props) {
             return <PreTreatmentPanel {...newProps}/>;
         }
         else if (currentPanelIndex === 3) {
+            newProps.handleAdvance = handleGamePanelAdvance;
             return <GamePanel numberOfGames={numberOfGames} {...newProps}/>;
         }
         else {
@@ -84,10 +132,42 @@ export default function MainWindow(props) {
             return
         }
 
-        setSoundPlayer(new SoundPlayer(REST_BASE_URL, subjectID, () => setIsInitializing(false)));
+        setSoundPlayer(new SoundPlayer(REST_BASE_URL, subjectID));
+    }
+
+    function retrieveSubjectAssignment() {
+        if (subjectID == null) {
+            return;
+        }
+        fetch(REST_BASE_URL + `/subject/${subjectID}`, {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => setIsSubjectElligible(data['experiment_status'] == ExperimentStatus.NOT_STARTED))
+            .catch(error => {
+                setIsError(true);
+                setErrorText(CONNECTION_ERROR_TEXT);
+                console.log(error);
+            })
+    }
+
+    function assertIsElligble() {
+        if (isSubjectElligible == null) {
+            return;
+        }
+        else if (!isSubjectElligible) {
+            setIsError(true);
+            setErrorText(USER_INELLIGIBLE_ERROR_TEXT);
+        }
+
     }
 
     useEffect(initializeSounds, []);
+    useEffect(retrieveSubjectAssignment, [subjectID])
+    useEffect(assertIsElligble, [isSubjectElligible]);
 
     return (
         <div>
@@ -97,9 +177,6 @@ export default function MainWindow(props) {
                     {renderCurrentPanel()}
                 </CardContent>
             </Card>
-            <Backdrop className={classes.backdrop} open={isInitializing}>
-                <CircularProgress color="inherit" />
-            </Backdrop>
         </div>
     );
 }

@@ -22,12 +22,14 @@ class DatabaseClient():
 
     def _execute_sql(self, sql_template, cursor=None, **kwargs):
         sql_string = self._construct_query(sql_template, **kwargs)
+        print(sql_string.as_string(self._client))
 
         local_cursor = not cursor
         if local_cursor:
             cursor = self._client.cursor()
 
-        cursor.execute(sql_string)
+        cursor.execute(sql_string) 
+        self._client.commit()
 
         if local_cursor:
             cursor.close()
@@ -56,12 +58,28 @@ class DatabaseClient():
         if not result:
             raise ValueError(f'Invalid Subject ID {subject_id}')
 
-        experiment_status, assignment_status = result[0]
+        experiment_status, assignment_status, is_pilot, gender, email_address = result[0]
 
         return {
-            'experiment_status': ExperimentStatus(experiment_status),
-            'assignment_status': AssignmentStatus(assignment_status),
+            'experiment_status': experiment_status,
+            'assignment_status': assignment_status,
+            'is_pilot': is_pilot, 
+            'gender': gender, 
+            'email_address': email_address
         }
+
+    def _set_experiment_status(self, subject_id: str, status: ExperimentStatus):
+        self._execute_sql(
+            SET_EXPERIMENT_STATUS_QUERY_TEMPLATE,
+            subject_id=subject_id,
+            experiment_status=status.value
+        )
+
+    def start_experiment(self, subject_id: str):
+        self._set_experiment_status(subject_id, ExperimentStatus.Incomplete)
+    
+    def complete_experiment(self, subject_id: str):
+        self._set_experiment_status(subject_id, ExperimentStatus.Complete)
 
     def store_move(self, subject_id: int, suggested_move: dict, move_taken: dict, board_state_before_turn: dict, game_number: int, player_symbol: str):
         self._execute_sql(

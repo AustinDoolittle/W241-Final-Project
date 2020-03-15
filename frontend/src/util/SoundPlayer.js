@@ -15,6 +15,7 @@ class SoundWrapper {
         this.internalAudio.addEventListener('error', (event) => this.handleError(event));
         this.internalAudio.addEventListener('canplaythrough', (event) => this.handleCanPlayThrough(event));
         this.internalAudio.type = mediaType;
+        this.internalAudio.load()
     }
 
     handleCanPlayThrough(event) {
@@ -77,7 +78,7 @@ export default class SoundPlayer {
             return;
         }
 
-        if (Object.values(this.sounds).every((sound) => sound.isReady)) {
+        if (this.onReady != null && Object.values(this.sounds).every((sound) => sound.isReady)) {
             this.onReady();
         }
     }

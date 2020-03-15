@@ -261,18 +261,18 @@ export default function GamePanel(props) {
 
     return (
         <div>
-        <Grid container>
-            <Grid item xs={3}>
-                <span>Game {currentGameNumber + 1} of {numberOfGames}</span>
+            <Grid container>
+                <Grid item xs={3}>
+                    <span>Game {currentGameNumber + 1} of {numberOfGames}</span>
+                </Grid>
+                <Grid item xs={6}>
+                </Grid>
+                <Grid item xs={3}>
+                    <span>
+                        Wins: {winLossDrawCounter.getWinCount()} Losses: {winLossDrawCounter.getLossCount()} Draws: {winLossDrawCounter.getDrawCount()}
+                    </span>
+                </Grid>
             </Grid>
-            <Grid item xs={6}>
-            </Grid>
-            <Grid item xs={3}>
-                <span>
-                    Wins: {winLossDrawCounter.getWinCount()} Losses: {winLossDrawCounter.getLossCount()} Draws: {winLossDrawCounter.getDrawCount()}
-                </span>
-            </Grid>
-        </Grid>
             <CellGrid 
                 boardState={boardState} 
                 handleClick={handleGridCellClick} 
