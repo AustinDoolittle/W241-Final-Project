@@ -42,7 +42,7 @@ export default function MainWindow(props) {
     const [soundPlayer, setSoundPlayer] = useState();
     const [subjectID, setSubjectID] = useState(params.get('subjectID'))
     const [isError, setIsError] = useState(false);
-    const [errorText, setErrorText] = useState()
+    const [errorText, setErrorText] = useState(BAD_LINK_ERROR_TEXT)
     const [isSubjectElligible, setIsSubjectElligible] = useState();
     const panelCount = 5;
 
