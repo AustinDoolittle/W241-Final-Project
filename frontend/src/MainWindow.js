@@ -10,7 +10,8 @@ import PostTreatmentPanel from './panels/PostTreatmentPanel';
 import ErrorPanel from './panels/ErrorPanel';
 import SoundPlayer from './util/SoundPlayer';
 import AudioTestPanel from './panels/AudioTestPanel';
-import { ExperimentStatus } from './util/enums';
+import NoSubjectIDPanel from './panels/NoSubjectIDPanel';
+import { ExperimentStatus, AssignmentStatus } from './util/enums';
 import { BAD_LINK_ERROR_TEXT, CONNECTION_ERROR_TEXT, USER_INELLIGIBLE_ERROR_TEXT } from './util/errorTextConstants';
 
 const useStyles = makeStyles( theme => ({
@@ -37,12 +38,13 @@ export default function MainWindow(props) {
     const classes = useStyles(props);
     const search = props.location.search;
     const params = new URLSearchParams(search);
+    const subjectID = params.get('subjectID');
 
     const [currentPanelIndex, setCurrentPanelIndex] = useState(0);
     const [soundPlayer, setSoundPlayer] = useState();
-    const [subjectID, setSubjectID] = useState(params.get('subjectID'))
     const [isError, setIsError] = useState(false);
     const [errorText, setErrorText] = useState(BAD_LINK_ERROR_TEXT)
+    const [inControlGroup, setInControlGroup] = useState();
     const [isSubjectElligible, setIsSubjectElligible] = useState();
     const panelCount = 5;
 
@@ -113,10 +115,15 @@ export default function MainWindow(props) {
     function renderCurrentPanel() {
         const newProps = {
             handleAdvance: advanceToNextPanel,
-            soundPlayer: soundPlayer
+            soundPlayer: soundPlayer,
+            inControlGroup: inControlGroup,
         }
 
-        if (subjectID == null || isError) {
+        if(subjectID == null) {
+            return <NoSubjectIDPanel></NoSubjectIDPanel>
+        }
+
+        if (isError) {
             if (soundPlayer != null) {
                 soundPlayer.cancelSound()
             }
@@ -143,9 +150,19 @@ export default function MainWindow(props) {
         }
     }
 
+    function initialize() {
+        initializeSounds();
+        retrieveSubjectAssignment();
+    }
+
     function initializeSounds() {
         if (subjectID == null) { 
             return
+        }
+
+        if (inControlGroup) {
+            setSoundPlayer(null);
+            return;
         }
 
         const noopHandler = () => {};
@@ -169,6 +186,14 @@ export default function MainWindow(props) {
                 const notStartedAndNotPilot = data['experiment_status'] === ExperimentStatus.NOT_STARTED && data['is_pilot'] === IS_PILOT;
                 setIsSubjectElligible(notStartedAndNotPilot);
 
+                if (data['assignment_status'] == AssignmentStatus.NOT_ASSIGNED) {
+                    setErrorText(BAD_LINK_ERROR_TEXT)
+                    setIsError(true);
+                    return;
+                }
+
+                setInControlGroup(data['assignment_status'] === AssignmentStatus.CONTROL)
+
             })
             .catch(error => {
                 setIsError(true);
@@ -188,8 +213,7 @@ export default function MainWindow(props) {
 
     }
 
-    useEffect(initializeSounds, []);
-    useEffect(retrieveSubjectAssignment, [subjectID])
+    useEffect(initialize, []);
     useEffect(assertIsElligble, [isSubjectElligible]);
 
     return (

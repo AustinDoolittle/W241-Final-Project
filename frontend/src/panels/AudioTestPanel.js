@@ -26,11 +26,20 @@ const useStyles = makeStyles({
 });
 
 export default function AudioTestPanel(props) {
-    const { soundPlayer, handleAdvance } = props;
+    const { soundPlayer, handleAdvance, inControlGroup } = props;
     const classes = useStyles(props);
 
     function wrongOption() {
         window.alert('This is the incorrect option. Please retrigger the audio and try again.');
+    }
+
+    function initialize() {
+        if (inControlGroup) {
+            handleAdvance();
+            return;
+        }
+
+        triggerAudio();
     }
 
     function triggerAudio() {
@@ -38,7 +47,7 @@ export default function AudioTestPanel(props) {
         soundPlayer.triggerSelectBSound();
     }
 
-    useEffect(triggerAudio, []);
+    useEffect(initialize, []);
 
     return (
         <div>

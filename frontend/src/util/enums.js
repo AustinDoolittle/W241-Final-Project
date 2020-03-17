@@ -15,3 +15,10 @@ export const ExperimentStatus = {
     INCOMPLETE: 'I',
     COMPLETE: 'C'
 }
+
+export const AssignmentStatus = {
+    NOT_ASSIGNED: 'N',
+    TREATMENT_MALE: 'TM',
+    TREATMENT_FEMALE: 'TF',
+    CONTROL: 'C'
+}

@@ -10,19 +10,28 @@ const useStyles = makeStyles({
 });
 
 export default function LandingPanel(props) {
-    const { handleAdvance, soundPlayer } = props; 
+    const { handleAdvance, soundPlayer, inControlGroup } = props; 
     const classes = useStyles(props);
+
+    var soundText;
+    if (!inControlGroup) {
+        soundText = (
+            <div>
+                <p>
+                    It is a requirement that you have headphones or speakers, as there are some 
+                    audio cues during the course of this activity. You can use the button below 
+                    to test out the sound on your device. 
+                </p>
+                <Button onClick={() => soundPlayer.triggerTestSound()}>Test Audio</Button>
+            </div>
+        )     
+    }
 
     return (
         <div>
             <p>Hello, and thank you for agreeing to take part in our study.</p>
             <p>You will be asked to play 5 short and simple games.</p>
-            <p>
-                It is a requirement that you have headphones or speakers, as there are some 
-                audio cues during the course of this activity. You can use the button below 
-                to test out the sound on your device. 
-            </p>
-            <Button onClick={() => soundPlayer.triggerTestSound()}>Test Audio</Button>
+            {soundText}
             <p>
                 Once you are ready to start playing, please click the START button below. NOTE: 
                 If you reload or navigate away from this page before completing all games, your

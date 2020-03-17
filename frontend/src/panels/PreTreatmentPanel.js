@@ -11,12 +11,22 @@ const useStyles = makeStyles({
 
 export default function PreTreatmentInformationPanel(props) {
     const classes = useStyles(props);
-    const { handleAdvance } = props;
+    const { handleAdvance, inControlGroup } = props;
+
+    var suggestedMoveInformation;
+
+    if  (inControlGroup) {
+        suggestedMoveInformation = " you will see a suggested move highlighted on the board. ";
+    }
+    else {
+        suggestedMoveInformation = " you will hear a speaker suggest a move. ";
+    }
+
     return (
         <div>
             <p>
                 You will be asked to play 5 simple games of tic-tac-toe. Before each of your moves, 
-                you will hear a speaker suggest a move. These moves may or may not be optimal and you 
+                {suggestedMoveInformation}These moves may or may not be optimal and you 
                 are not required to follow their suggestion. Have fun playing!
             </p>
             <Button variant="contained" onClick={handleAdvance} className={classes.continueButton}>Continue</Button>

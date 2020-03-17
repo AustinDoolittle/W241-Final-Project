@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
 const randomMoveProbability = 0.5;
 
 export default function GamePanel(props) { 
-    const { handleAdvance, numberOfGames, soundPlayer, handlePlayerMove } = props;
+    const { handleAdvance, numberOfGames, soundPlayer, handlePlayerMove, inControlGroup } = props;
     const classes = useStyles(props);
     const [currentGameNumber, setCurrentGameNumber] = useState(0);
     const [currentSymbolTurn, setCurrentSymbolTurn] = useState(CellStates.X);
@@ -95,7 +95,10 @@ export default function GamePanel(props) {
         }
 
         setBoardState(gameController.getBoardState());
-        soundPlayer.cancelSound();
+
+        if (!inControlGroup) {
+            soundPlayer.cancelSound();
+        }
 
         var newGameStateText;
         if (gameController.isGameComplete()) {
@@ -232,7 +235,9 @@ export default function GamePanel(props) {
 
         // const selectedMove = getRandomAvailableCell();
         setHighlightedCell(selectedMove);
-        soundPlayer.triggerMoveSuggestionSound(selectedMove[0], selectedMove[1])
+        if (!inControlGroup) {
+            soundPlayer.triggerMoveSuggestionSound(selectedMove[0], selectedMove[1])
+        }
     }
 
     function getOptimalMove() {
