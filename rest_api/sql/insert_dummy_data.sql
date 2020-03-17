@@ -1,0 +1,48 @@
+INSERT INTO tblSubjects (
+    experiment_status,
+    assignment_status,
+    is_pilot,
+    gender,
+    email_address
+)
+VALUES (
+    'N',
+    'TM',
+    FALSE,
+    'M',
+    'austindoolittle@gmail.com'
+),
+ (
+    'N',
+    'TF',
+    FALSE,
+    'M',
+    'austindoolittle@gmail.com'
+),
+ (
+    'N',
+    'C',
+    FALSE,
+    'M',
+    'austindoolittle@gmail.com'
+), (
+    'N',
+    'TM',
+    TRUE,
+    'M',
+    'austindoolittle@gmail.com'
+),
+ (
+    'N',
+    'TF',
+    TRUE,
+    'M',
+    'austindoolittle@gmail.com'
+),
+ (
+    'N',
+    'C',
+    TRUE,
+    'M',
+    'austindoolittle@gmail.com'
+);

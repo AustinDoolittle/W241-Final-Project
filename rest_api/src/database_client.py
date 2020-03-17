@@ -1,7 +1,11 @@
+import os
+
 from psycopg2 import connect, sql
 
 from src.enums import AssignmentStatus, ExperimentStatus
 from src._db_queries import  (
+    GET_SUBJECT_EMAILS_QUERY_TEMPLATE,
+    GET_SUBJECT_RESULTS_QUERY_TEMPLATE,
     GET_SUBJECT_QUERY_TEMPLATE, 
     STORE_MOVE_QUERY_TEMPLATE,
     SET_EXPERIMENT_STATUS_QUERY_TEMPLATE
@@ -13,11 +17,11 @@ class DatabaseClient():
 
     def __init__(self):
         self._client = connect(
-            dbname='postgres', 
-            host='postgres', 
-            port=5432, 
-            user='postgres', 
-            password='CHANGEME'
+            dbname=os.environ['POSTGRES_DBNAME'], 
+            host=os.environ["POSTGRES_HOST"], 
+            port=int(os.environ["POSTGRES_PORT"]), 
+            user=os.environ["POSTGRES_USERNAME"], 
+            password=os.environ["POSTGRES_PASSWORD"]
         )
 
     def _execute_sql(self, sql_template, cursor=None, **kwargs):
@@ -108,4 +112,16 @@ class DatabaseClient():
             SET_EXPERIMENT_STATUS_QUERY_TEMPLATE,
             subject_id=subject_id,
             experiment_status=experiment_status.value
+        )
+
+    def get_subject_emails(self, is_pilot):
+        return self._execute_sql_and_return_results(
+            GET_SUBJECT_EMAILS_QUERY_TEMPLATE,
+            is_pilot=is_pilot
+        )
+
+    def get_subject_results(self, subject_id):
+        return self._execute_sql_and_return_results(
+            GET_SUBJECT_RESULTS_QUERY_TEMPLATE,
+            subject_id=subject_id
         )

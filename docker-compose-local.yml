@@ -6,8 +6,12 @@ services:
         build:
             context: .
             dockerfile: ./docker/db.dockerfile
-        environment: 
+        environment: &db-connection-environment
+            POSTGRES_USERNAME: postgres
             POSTGRES_PASSWORD: CHANGEME
+            POSTGRES_HOST: postgres
+            POSTGRES_PORT: 5432
+            POSTGRES_DBNAME: postgres
         volumes:
             - db-data:/var/lib/postgresql/data
         restart: always
@@ -15,27 +19,26 @@ services:
     rest_api:
         build:
             context: .
-            dockerfile: ./docker/rest_api.dockerfile
+            dockerfile: ./docker/python.dockerfile
         image: 'w241-final-project/rest_api'
         volumes:
             - ./rest_api:/app
         environment: 
             FLASK_ENV: development
+            <<: *db-connection-environment
         depends_on: 
             - postgres
         links:
-            - "postgres"
+            - postgres
         restart: always
 
     frontend:
         build:
             context: .
-            dockerfile: ./docker/frontend.dockerfile
+            dockerfile: ./docker/react.dockerfile
         image: 'w241-final-project/frontend-dev'
         volumes:
             - ./frontend:/app
-        environment:
-            REST_API_URL: localhost:5001
         depends_on: 
             - rest_api
         restart: always
