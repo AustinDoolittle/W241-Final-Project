@@ -8,41 +8,55 @@ INSERT INTO tblSubjects (
 VALUES (
     'N',
     'TM',
-    FALSE,
+    TRUE,
     'M',
-    'austindoolittle@gmail.com'
-),
- (
+    'austin.doolittle@berkeley.edu'
+), (
     'N',
     'TF',
-    FALSE,
+    TRUE,
     'M',
-    'austindoolittle@gmail.com'
-),
- (
+    'austin.doolittle@berkeley.edu'
+), (
     'N',
     'C',
-    FALSE,
+    TRUE,
     'M',
-    'austindoolittle@gmail.com'
+    'austin.doolittle@berkeley.edu'
+), (  /* start bethany */
+    'N',
+    'TM',
+    TRUE,
+    'F',
+    'bethany.keller@berkeley.edu'
 ), (
+    'N',
+    'TF',
+    TRUE,
+    'F',
+    'bethany.keller@berkeley.edu'
+), (
+    'N',
+    'C',
+    TRUE,
+    'F',
+    'bethany.keller@berkeley.edu'
+), (  /* start dani */
     'N',
     'TM',
     TRUE,
     'M',
-    'austindoolittle@gmail.com'
-),
- (
+    'daniel.alvarez83@berkeley.edu'
+), (
     'N',
     'TF',
     TRUE,
     'M',
-    'austindoolittle@gmail.com'
-),
- (
+    'daniel.alvarez83@berkeley.edu'
+), (
     'N',
     'C',
     TRUE,
     'M',
-    'austindoolittle@gmail.com'
+    'daniel.alvarez83@berkeley.edu'
 );
