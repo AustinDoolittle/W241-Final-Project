@@ -23,6 +23,7 @@ services:
         image: 'w241-final-project/rest_api'
         volumes:
             - ./rest_api:/app
+            - ./rest_api:/opt/sql
         environment: 
             FLASK_ENV: development
             <<: *db-connection-environment
@@ -43,7 +44,6 @@ services:
             - rest_api
         restart: always
 
-    
     nginx:
         image: 'nginx:1.17.9-alpine'
         ports:
