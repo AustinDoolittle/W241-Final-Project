@@ -55,13 +55,13 @@ export default function AudioTestPanel(props) {
             <Button variant="contained" onClick={triggerAudio} className={classes.triggerAudioButton}>Retrigger Audio</Button>
             <Grid container>
                 <Grid item xs="4" className={classes.audioTestContainer}>
-                    <span className={classes.audioTestButton} onClick={wrongOption}>A</span>
+                    <Button size="large" variant="contained" color="primary" onClick={wrongOption}>A</Button>
                 </Grid>
                 <Grid item xs="4" className={classes.audioTestContainer}>
-                    <span className={classes.audioTestButton} onClick={handleAdvance}>B</span>
+                    <Button size="large" variant="contained" color="primary" onClick={handleAdvance}>B</Button>
                 </Grid>
                 <Grid item xs="4" className={classes.audioTestContainer}>
-                    <span className={classes.audioTestButton} onClick={wrongOption}>C</span>
+                    <Button size="large" variant="contained" color="primary" onClick={wrongOption}>C</Button>
                 </Grid>
             </Grid>
         </div>

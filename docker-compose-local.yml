@@ -23,7 +23,7 @@ services:
         image: 'w241-final-project/rest_api'
         volumes:
             - ./rest_api:/app
-            - ./rest_api:/opt/sql
+            - ./rest_api/sql:/opt/sql
         environment: 
             FLASK_ENV: development
             <<: *db-connection-environment
