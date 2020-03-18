@@ -180,6 +180,7 @@ export default function GamePanel(props) {
         setIsGameComplete(false);
         setMoveNumber(0);
         setHighlightedCell();
+        handleTurnChange();
     }
 
     function startNextGame() {
@@ -233,7 +234,6 @@ export default function GamePanel(props) {
         
         var selectedMove = getMove();
 
-        // const selectedMove = getRandomAvailableCell();
         setHighlightedCell(selectedMove);
         if (!inControlGroup) {
             soundPlayer.triggerMoveSuggestionSound(selectedMove[0], selectedMove[1])
@@ -288,7 +288,7 @@ export default function GamePanel(props) {
     }
 
     useEffect(initializeGame, [currentGameNumber]);
-    useEffect(handleTurnChange, [currentSymbolTurn, playerSymbolAssignment]);
+    useEffect(handleTurnChange, [gameController, currentSymbolTurn]);
 
     return (
         <div>
