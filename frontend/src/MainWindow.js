@@ -32,7 +32,6 @@ const useStyles = makeStyles( theme => ({
 
 const numberOfGames = 5;
 const REST_BASE_URL = `https://${window.location.hostname}/api`;
-const IS_PILOT = true;
 
 export default function MainWindow(props) {
     const classes = useStyles(props);
@@ -183,8 +182,8 @@ export default function MainWindow(props) {
             })
             .then(response => response.json())
             .then(data => {
-                const notStartedAndNotPilot = data['experiment_status'] === ExperimentStatus.NOT_STARTED && data['is_pilot'] === IS_PILOT;
-                setIsSubjectElligible(notStartedAndNotPilot);
+                const notStarted = data['experiment_status'] === ExperimentStatus.NOT_STARTED;
+                setIsSubjectElligible(notStarted);
 
                 if (data['assignment_status'] === AssignmentStatus.NOT_ASSIGNED) {
                     setErrorText(BAD_LINK_ERROR_TEXT)
