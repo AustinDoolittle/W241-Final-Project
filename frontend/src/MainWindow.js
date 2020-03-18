@@ -186,7 +186,7 @@ export default function MainWindow(props) {
                 const notStartedAndNotPilot = data['experiment_status'] === ExperimentStatus.NOT_STARTED && data['is_pilot'] === IS_PILOT;
                 setIsSubjectElligible(notStartedAndNotPilot);
 
-                if (data['assignment_status'] == AssignmentStatus.NOT_ASSIGNED) {
+                if (data['assignment_status'] === AssignmentStatus.NOT_ASSIGNED) {
                     setErrorText(BAD_LINK_ERROR_TEXT)
                     setIsError(true);
                     return;
