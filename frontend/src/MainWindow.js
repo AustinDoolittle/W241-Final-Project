@@ -13,6 +13,7 @@ import AudioTestPanel from './panels/AudioTestPanel';
 import NoSubjectIDPanel from './panels/NoSubjectIDPanel';
 import { ExperimentStatus, AssignmentStatus } from './util/enums';
 import { BAD_LINK_ERROR_TEXT, CONNECTION_ERROR_TEXT, USER_INELLIGIBLE_ERROR_TEXT } from './util/errorTextConstants';
+import UseComputerPanel from './panels/UseComputerPanel';
 
 const useStyles = makeStyles( theme => ({
     card: {
@@ -111,6 +112,10 @@ export default function MainWindow(props) {
         advanceToNextPanel();
     }
 
+    function isOnMobile() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
     function renderCurrentPanel() {
         const newProps = {
             handleAdvance: advanceToNextPanel,
@@ -128,6 +133,10 @@ export default function MainWindow(props) {
             }
 
             return <ErrorPanel errorText={errorText} {...newProps} />
+        }
+
+        if (isOnMobile()) {
+            return <UseComputerPanel></UseComputerPanel>
         }
 
         if (currentPanelIndex === 0) {

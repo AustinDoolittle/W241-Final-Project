@@ -8,7 +8,7 @@ class Emailer:
     _MESSAGE_BODY_TEMPLATE = """\
     Hello, and thank you again for agreeing to take part in our study. 
     
-    Below is a link to the web application where you will play a series of games, which should take no longer than 10 minutes. Please click the link when you are able to complete the game in a single session, as you will not be given another attempt to participate if you leave the webpage early.
+    Below is a link to the web application where you will play a series of games, which should take no longer than 10 minutes. Please click the link when you are able to complete the game on a computer in a single session, as you will not be given another attempt to participate if you leave the webpage early. You will also not be allowed to proceed if you attempt to access the page on a mobile device.
 
     {external_link}
 
