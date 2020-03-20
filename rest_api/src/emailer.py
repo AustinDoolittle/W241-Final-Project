@@ -28,7 +28,7 @@ class Emailer:
         self._server.login(self._sender_email_address, self._sender_password)
 
     def _construct_message(self, external_link, due_date):
-        due_date_string = due_date.strfime('%B %d')
+        due_date_string = due_date.strftime('%B %d')
         body_text = self._MESSAGE_BODY_TEMPLATE.format(external_link=external_link, due_date=due_date_string)
         return self._MESSAGE_CONTENT_TEMPLATE.format(subject=self._MESSAGE_SUBJECT, body=body_text)
 
