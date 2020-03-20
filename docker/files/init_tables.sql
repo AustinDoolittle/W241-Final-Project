@@ -6,8 +6,8 @@ CREATE TABLE tblSubjects (
     assignment_status VARCHAR(2) NOT NULL,
     is_pilot BOOLEAN NOT NULL,
     gender VARCHAR(1) NOT NULL,
+    age INT NOT NULL,
     email_address VARCHAR(256) NOT NULL,
-    
     PRIMARY KEY(subject_id)
 );
 

@@ -1,3 +1,4 @@
+import csv
 import os
 
 from psycopg2 import connect, sql
@@ -125,3 +126,48 @@ class DatabaseClient():
             GET_SUBJECT_RESULTS_QUERY_TEMPLATE,
             subject_id=subject_id
         )
+
+    def insert_subjects_from_csv(self, filename):
+        def row_count():
+            with open(filename) as in_file:
+                return sum(1 for _ in in_file)
+
+        num_rows = row_count()
+        fp = open(filename, 'r')
+        csv_reader = csv.DictReader(fp)
+
+        kwargs = {}
+
+        sql_string = "INSERT INTO tblSubjects ("
+        for i, column_name in enumerate(csv_reader.fieldnames):
+            sql_string += column_name
+
+            if i < len(csv_reader.fieldnames) - 1:
+                sql_string += ', '
+
+        sql_string += ') VALUES '
+        
+        for i, row in enumerate(csv_reader):
+            sql_string += '(\n'
+            for j, (column_name, column_value) in enumerate(row.items()):
+                key_string = column_name + '_' + str(i)
+                kwargs[key_string] = column_value
+                sql_string += '{' + key_string + '}'
+                if j < (len(row) - 1):
+                    sql_string += ','
+
+                sql_string += '\n'
+        
+            sql_string += ')'
+
+            if csv_reader.line_num != num_rows:
+                sql_string += ','
+
+            sql_string += '\n'
+        
+        sql_string += ';'
+
+        self._execute_sql(sql_string, **kwargs)
+
+
+

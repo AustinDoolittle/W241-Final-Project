@@ -1,3 +1,4 @@
+import csv
 import getpass
 import sys
 import smtplib
@@ -92,6 +93,12 @@ def get(subject):
     client = DatabaseClient()
     _print_tabular(client.get_subject_results(subject))
 
+
+@cli.command()
+@click.argument('filepath')
+def insert(filepath):
+    client = DatabaseClient()
+    client.insert_subjects_from_csv(filepath)
 
 if __name__ == '__main__':
     cli()

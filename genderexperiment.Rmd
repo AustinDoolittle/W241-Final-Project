@@ -1,0 +1,189 @@
+---
+title: "Gender Experiment - w241 Final Project"
+author: "Daniel Alvarez"
+date: "3/13/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r,include=FALSE, results='hide'}
+# clear out environment variables
+rm(list=ls())
+
+# set seed for randomization
+set.seed(1)
+```
+
+Load packages
+```{r, include=FALSE}
+# load packages 
+library(foreign)
+library(data.table)
+library(knitr)
+library(dplyr)
+library(foreign)
+library(zoo)
+library(lmtest) # robust standard errors
+library(sandwich) # robust standard errors
+library(stargazer) # reporting formatted results
+```
+
+
+## Gender experiment 
+
+Here we load the pre-treatment survey data. Then block on gender and age, by peaking at the distribution. Then, assign subjects randomly to the pilot study and treatment, placebo and control groups.
+
+```{r cars}
+d <- fread('./rest_api/sql/pretreatmentresponses.csv')
+d
+```
+
+Peak at the dataset
+
+```{r}
+str(d)
+summary(d)
+dim(d)
+```
+
+Set an `id` variable (ordinal) useful for randomization assignment
+
+```{r}
+d[,'id'] <- c(1:nrow(d))
+```
+
+
+Rename long variable names
+
+```{r}
+colnames(d)[1:5] <-c("timestamp","gender_string","age","email","consent")
+str(d)
+```
+
+Check for any "No" consents. These would be excluded from the study.
+
+```{r}
+table(d$consent)
+```
+
+
+### Modify dataset
+
+Look at gender distribution.
+```{r}
+table(d$gender_string)
+```
+
+Look at age distribution
+```{r}
+hist(d$age,main="Age distribution", xlab="Counts for age",ylab = "Frequency", breaks=50)
+```
+
+```{r}
+# summary statistics on age
+summary(d$age)
+```
+
+
+Codify gender as a binary variable. Female is 0, Male is 1.
+
+```{r}
+d[, gender:=ifelse(gender_string=='Female',0,1)]
+
+# check through a cross-tab
+# table(d$gender_string,d$gender)
+```
+
+### Randomly assign subjects to pilot study
+
+Assume 10 people assigned to pilot.
+
+```{r pressure, echo=FALSE}
+
+# Assume 10 people assigned to the pilot
+n_pilot <- 10
+x_prob <- n_pilot/nrow(d)
+x_prob <- round(x_prob,digits=2)
+x_prob
+
+d[,'is_pilot':= sample(c(0:1),size=.N, replace=TRUE, prob=c(1-x_prob,x_prob))]
+
+# check number of people assigned to pilot is ~10
+table(d$is_pilot)
+```
+
+### Blocking 
+
+Block on gender.
+
+```{r}
+# Assign variables
+N = nrow(d)
+n_female <- length(d$age[d$gender==0])
+n_female
+
+n_male = length(d$age[d$gender==1])
+n_male
+
+#randomly assign subjects to either treatment or control groups blocking by state
+randomize_blockbygender <- function(){
+  ifelse(d$gender==1,sample(c(rep(0,n_female/2),rep(1,n_female/2))),sample(c(rep(0,n_male/2),rep(1,n_male/2))) )
+}
+
+d[,'treatment'] <- randomize_blockbygender()
+
+```
+
+Check cross-tab of treatment and gender to observe if more or less equal proportions of gender in each block.
+
+```{r}
+table(d$gender,d$treatment)
+```
+
+
+### Introduce two treatment groups: female voice `TF` and male voice `TM`
+
+Split treatment group further into two treatment groups
+
+```{r}
+n_treatment = length(d$age[d$treatment==1])
+n_treatment
+
+#randomly assign subjects to either two treatment groups (TF and TM) for those with treatment==1
+randomize_treatment <- function(){
+  ifelse(d$treatment==1,sample(c(rep(0,n_treatment/2),rep(1,n_treatment/2))),0)
+}
+
+d[,'is_treatedmalevoice'] <- randomize_treatment()
+```
+
+Check cross-tab of treatment and is_treatedmalevoice to observe if more or less equal proportions of treatment of male and female voice when treatment ==1.
+
+```{r}
+table(d$is_treatedmalevoice,d$treatment)
+```
+
+For dataset readability purposes, include a string variable for each subjects assignment: control `C`, treatment with male voice `TM`, and treatment with female voice `TF`.
+
+```{r}
+# create a string assignment variable for readability purposes
+d[treatment==0, assignment:='C']
+d[treatment==1 & is_treatedmalevoice==1, assignment:='TM']
+d[treatment==1 & is_treatedmalevoice==0, assignment:='TC']
+
+# check cross-tab
+table(d$assignment)
+```
+
+Peak at resulting dataset.
+
+```{r}
+head(d)
+```
+
+
+Re
