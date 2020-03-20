@@ -1,4 +1,4 @@
-import csv
+from datetime import datetime as dt
 import getpass
 import sys
 import smtplib
@@ -9,6 +9,9 @@ from tqdm import tqdm
 
 from src.database_client import DatabaseClient
 from src.emailer import Emailer
+
+PILOT_DUE_DATE = dt(2020, 3, 27)
+REGULAR_DUE_DATE = dt(2020, 4, 7)
 
 def yes_or_no(question):
     reply = str(input(question + ' (y/n): ')).lower().strip()
@@ -38,6 +41,12 @@ def email(pilot, hostname, sender_email):
     client = DatabaseClient()
     subject_data = client.get_subject_emails(pilot)
 
+
+    if pilot:
+        due_date = PILOT_DUE_DATE
+    else:
+        due_date = REGULAR_DUE_DATE
+
     print()
     print('DUMMY CHECK')
     print(f'Is Pilot?: {pilot}')
@@ -60,7 +69,7 @@ def email(pilot, hostname, sender_email):
     for subject_id, email_address in tqdm(subject_data):
         external_link = f'https://{hostname}?subjectID={subject_id}'
         try:
-            emailer.send_email(email_address, external_link)
+            emailer.send_email(email_address, external_link, due_date)
         except smtplib.SMTPException as e:
             print(f'Error sending email to subject {subject_id}, email {email_address}: {str(e)}')
 
