@@ -80,7 +80,7 @@ table(d$gender_string)
 
 Look at age distribution
 ```{r}
-hist(d$age,main="Age distribution", xlab="Counts for age",ylab = "Frequency", breaks=50)
+hist(as.numeric(d$age),main="Age distribution", xlab="Counts for age",ylab = "Frequency", breaks=50)
 ```
 
 ```{r}
@@ -173,7 +173,7 @@ For dataset readability purposes, include a string variable for each subjects as
 # create a string assignment variable for readability purposes
 d[treatment==0, assignment:='C']
 d[treatment==1 & is_treatedmalevoice==1, assignment:='TM']
-d[treatment==1 & is_treatedmalevoice==0, assignment:='TC']
+d[treatment==1 & is_treatedmalevoice==0, assignment:='TF']
 
 # check cross-tab
 table(d$assignment)
@@ -185,5 +185,17 @@ Peak at resulting dataset.
 head(d)
 ```
 
+```{r}
+new_format_df <- data.table()
+new_format_df$experiment_status <- rep('N', nrow(d))
+new_format_df$assignment_status <- d$assignment
+new_format_df$is_pilot <- d$is_pilot
+new_format_df$gender <- substring(d$gender_string, 0, 1)
+new_format_df$age <- d$age
+new_format_df$email_address <- d$email
+head(new_format_df)
+```
 
-Re
+```{r}
+fwrite(new_format_df, './rest_api/sql/formatted_pretreatment_data.csv', col.names=T)
+```

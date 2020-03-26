@@ -57,6 +57,13 @@ FROM tblSubjects
 WHERE is_pilot = {is_pilot}
 """
 
+GET_SUBJECT_EMAILS_NOT_COMPLETE_QUERY_TEMPLATE = """
+SELECT subject_id, email_address
+FROM tblSubjects
+WHERE is_pilot = {is_pilot} AND experiment_status = 'N'
+"""
+
+
 GET_SUBJECT_RESULTS_QUERY_TEMPLATE = """
 SELECT 
     game_number,

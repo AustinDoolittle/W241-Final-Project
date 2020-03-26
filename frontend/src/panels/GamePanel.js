@@ -180,7 +180,7 @@ export default function GamePanel(props) {
         setIsGameComplete(false);
         setMoveNumber(0);
         setHighlightedCell();
-        handleTurnChange();
+        // handleTurnChange();
     }
 
     function startNextGame() {

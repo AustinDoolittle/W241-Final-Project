@@ -3,6 +3,7 @@ INSERT INTO tblSubjects (
     assignment_status,
     is_pilot,
     gender,
+    age,
     email_address
 )
 VALUES (
@@ -10,17 +11,20 @@ VALUES (
     'TM',
     TRUE,
     'M',
+    24,
     'austin.doolittle@berkeley.edu'
 ), (
     'N',
     'TF',
     TRUE,
     'M',
+    24,
     'austin.doolittle@berkeley.edu'
 ), (
     'N',
     'C',
     TRUE,
     'M',
+    24,
     'austin.doolittle@berkeley.edu'
 );

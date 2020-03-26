@@ -9,7 +9,8 @@ from src._db_queries import  (
     GET_SUBJECT_RESULTS_QUERY_TEMPLATE,
     GET_SUBJECT_QUERY_TEMPLATE, 
     STORE_MOVE_QUERY_TEMPLATE,
-    SET_EXPERIMENT_STATUS_QUERY_TEMPLATE
+    SET_EXPERIMENT_STATUS_QUERY_TEMPLATE,
+    GET_SUBJECT_EMAILS_NOT_COMPLETE_QUERY_TEMPLATE,
 )
 
 
@@ -115,9 +116,14 @@ class DatabaseClient():
             experiment_status=experiment_status.value
         )
 
-    def get_subject_emails(self, is_pilot):
+    def get_subject_emails(self, is_pilot, reminder):
+        if reminder:
+            query_template = GET_SUBJECT_EMAILS_NOT_COMPLETE_QUERY_TEMPLATE
+        else:
+            query_template = GET_SUBJECT_EMAILS_QUERY_TEMPLATE
+
         return self._execute_sql_and_return_results(
-            GET_SUBJECT_EMAILS_QUERY_TEMPLATE,
+            query_template,
             is_pilot=is_pilot
         )
 

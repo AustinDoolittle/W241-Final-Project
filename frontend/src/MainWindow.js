@@ -13,7 +13,6 @@ import AudioTestPanel from './panels/AudioTestPanel';
 import NoSubjectIDPanel from './panels/NoSubjectIDPanel';
 import { ExperimentStatus, AssignmentStatus } from './util/enums';
 import { BAD_LINK_ERROR_TEXT, CONNECTION_ERROR_TEXT, USER_INELLIGIBLE_ERROR_TEXT } from './util/errorTextConstants';
-import UseComputerPanel from './panels/UseComputerPanel';
 
 const useStyles = makeStyles( theme => ({
     card: {
@@ -47,6 +46,11 @@ export default function MainWindow(props) {
     const [inControlGroup, setInControlGroup] = useState();
     const [isSubjectElligible, setIsSubjectElligible] = useState();
     const panelCount = 5;
+
+    window.onbeforeunload = function(event) {
+        if (currentPanelIndex > 1 && currentPanelIndex <= 3)
+        return "If you leave, you will not be given another opportunity to participate. Continue?";
+    };
 
     function advanceToNextPanel() {
         const newIndex = currentPanelIndex + 1
@@ -102,7 +106,7 @@ export default function MainWindow(props) {
         })
     }
 
-    function handleLandingPanelAdvance() {
+    function handleAudioTestPanelAdvance() {
         postExperimentStarted();
         advanceToNextPanel();
     }
@@ -110,6 +114,22 @@ export default function MainWindow(props) {
     function handleGamePanelAdvance() {
         postExperimentComplete();
         advanceToNextPanel();
+    }
+
+    function isOnInternetExplorer() {
+        var ua = window.navigator.userAgent;
+        var msie = ua.indexOf('MSIE ');
+        if (msie > 0) {
+            // IE 10 or older => return version number
+            return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+        }
+
+        var trident = ua.indexOf('Trident/');
+        if (trident > 0) {
+            // IE 11 => return version number
+            var rv = ua.indexOf('rv:');
+            return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+        }
     }
 
     function isOnMobile() {
@@ -136,14 +156,18 @@ export default function MainWindow(props) {
         }
 
         if (isOnMobile()) {
-            return <UseComputerPanel></UseComputerPanel>
+            return <p>You may not use a mobile device. You must use a computer. Please navigate to this link on a computer.</p> 
+        }
+
+        if(isOnInternetExplorer()) {
+            return <p>You must use chrome or Firefox. Please copy paste this link into a chrome or firefox browser.</p> 
         }
 
         if (currentPanelIndex === 0) {
-            newProps.handleAdvance = handleLandingPanelAdvance;
             return <LandingPanel {...newProps}/>;
         }
         else if (currentPanelIndex === 1) {
+            newProps.handleAdvance = handleAudioTestPanelAdvance
             return <AudioTestPanel {...newProps} />;
         }
         else if (currentPanelIndex === 2) {
@@ -189,7 +213,9 @@ export default function MainWindow(props) {
                     'Accept': 'application/json'
                 }
             })
-            .then(response => response.json())
+            .then(response => {
+                return response.json()
+            })
             .then(data => {
                 const notStarted = data['experiment_status'] === ExperimentStatus.NOT_STARTED;
                 setIsSubjectElligible(notStarted);

@@ -35,12 +35,12 @@ def cli():
 @cli.command()
 @click.option('--pilot', is_flag=True)
 @click.option('--hostname', default='doolittle.dev')
+@click.option('--reminder', is_flag=True)
 @click.option('--sender-email', default="berkeleyw241experiment@gmail.com")
-def email(pilot, hostname, sender_email):
+def email(pilot, reminder, hostname, sender_email):
 
     client = DatabaseClient()
-    subject_data = client.get_subject_emails(pilot)
-
+    subject_data = client.get_subject_emails(pilot, reminder)
 
     if pilot:
         due_date = PILOT_DUE_DATE
@@ -50,6 +50,7 @@ def email(pilot, hostname, sender_email):
     print()
     print('DUMMY CHECK')
     print(f'Is Pilot?: {pilot}')
+    print(f'Is Reminder?: {reminder}')
     print(f'Hostname: {hostname}')
     print(f'Number of Subjects: {len(subject_data)}')
     print()
@@ -69,7 +70,7 @@ def email(pilot, hostname, sender_email):
     for subject_id, email_address in tqdm(subject_data):
         external_link = f'https://{hostname}?subjectID={subject_id}'
         try:
-            emailer.send_email(email_address, external_link, due_date)
+            emailer.send_email(email_address, external_link, due_date, send_reminder=reminder)
         except smtplib.SMTPException as e:
             print(f'Error sending email to subject {subject_id}, email {email_address}: {str(e)}')
 
