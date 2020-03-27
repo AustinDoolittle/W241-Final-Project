@@ -99,14 +99,26 @@ def execute(filename, print_result):
 
 @cli.command()
 @click.argument('subject')
-def get(subject):
+def subject(subject):
     client = DatabaseClient()
     _print_tabular(client.get_subject_results(subject))
 
+@cli.command()
+@click.option('--rates', is_flag=True)
+@click.option('-f', '--output-file', required=True)
+def results(rates, output_file):
+    client = DatabaseClient()
+
+    if rates:
+        fn = client.write_compliance_rates_to_file
+    else:
+        fn = client.write_all_moves_to_file
+
+    fn(output_file)
 
 @cli.command()
 @click.argument('filepath')
-def insert(filepath):
+def insert_subjects(filepath):
     client = DatabaseClient()
     client.insert_subjects_from_csv(filepath)
 

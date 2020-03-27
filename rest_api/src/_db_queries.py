@@ -87,3 +87,71 @@ FROM tblResults
 WHERE subject_id = {subject_id}
 ORDER BY game_number, move_number
 """
+
+GET_ALL_MOVES = """
+SELECT 
+    s.subject_id, 
+    s.experiment_status, 
+    s.assignment_status, 
+    s.is_pilot, 
+    s.gender, 
+    s.age, 
+    s.email_address, 
+    r.game_number, 
+    r.move_number, 
+    r.player_symbol, 
+    r.board_state_top_left,      
+    r.board_state_top_left,
+    r.board_state_top_middle,
+    r.board_state_top_right,
+    r.board_state_middle_left,
+    r.board_state_middle_middle,
+    r.board_state_middle_right,
+    r.board_state_bottom_left,
+    r.board_state_bottom_middle,
+    r.board_state_bottom_right,
+    r.suggested_move_row,
+    r.suggested_move_column,
+    r.is_suggested_move_optimal,
+    r.move_taken_row,
+    r.move_taken_column
+FROM 
+    tblSubjects s,
+    tblResults r
+
+WHERE s.subject_id = r.subject_id
+"""
+
+GET_COMPLIANCE_RATES = """
+SELECT
+    s.subject_id,
+    s.experiment_status,
+    s.assignment_status,
+    s.is_pilot,
+    s.gender,
+    s.age,
+    s.email_address,
+    COALESCE(c.complied_count, 0),
+    COALESCE(c.total_count, 0),
+    CASE WHEN c.total_count IS NULL THEN 0
+        ELSE c.complied_count / CAST(c.total_count AS FLOAT)
+    END AS comply_rate
+FROM 
+    tblSubjects s
+LEFT JOIN (
+    SELECT 
+        subject_id,
+        SUM(
+            CAST(
+                    (
+                        r.suggested_move_row = r.move_taken_row AND 
+                        r.suggested_move_column = r.move_taken_column
+                    ) AS INT
+                )
+        ) AS complied_count,
+        COUNT(subject_id) as total_count
+    FROM tblResults as r
+    GROUP BY r.subject_id
+) c
+ON c.subject_id = s.subject_id;
+"""

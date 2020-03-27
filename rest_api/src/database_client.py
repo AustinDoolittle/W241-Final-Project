@@ -11,6 +11,8 @@ from src._db_queries import  (
     STORE_MOVE_QUERY_TEMPLATE,
     SET_EXPERIMENT_STATUS_QUERY_TEMPLATE,
     GET_SUBJECT_EMAILS_NOT_COMPLETE_QUERY_TEMPLATE,
+    GET_ALL_MOVES,
+    GET_COMPLIANCE_RATES
 )
 
 
@@ -175,5 +177,65 @@ class DatabaseClient():
 
         self._execute_sql(sql_string, **kwargs)
 
+    def _select_rows_to_file(self, query_string, column_names, output_file):
+        with open(output_file, 'w') as fp:
+            writer = csv.DictWriter(fp, fieldnames=column_names)
+            writer.writeheader()
+            for result_row in self._execute_sql_and_return_results(query_string):
+                row_dict = {}
+                for val, column_name in zip(result_row, column_names):
+                    row_dict[column_name] = val
+                
+                writer.writerow(row_dict)
 
 
+    def write_compliance_rates_to_file(self, filepath):
+        columns = [
+            "subject_id",
+            "experiment_status",
+            "assignment_status",
+            "is_pilot",
+            "gender",
+            "age",
+            "email_address",
+            "complied_count",
+            "total_count",
+            "comply_rate"
+        ]
+
+        self._select_rows_to_file(
+            GET_COMPLIANCE_RATES,
+            columns,
+            filepath
+        )
+
+    def write_all_moves_to_file(self, filepath):
+        columns = [
+            "subject_id",
+            "experiment_status", 
+            "assignment_status", 
+            "is_pilot", 
+            "gender", 
+            "age", 
+            "email_address", 
+            "game_number", 
+            "move_number", 
+            "player_symbol", 
+            "board_state_top_left",      
+            "board_state_top_left",
+            "board_state_top_middle",
+            "board_state_top_right",
+            "board_state_middle_left",
+            "board_state_middle_middle",
+            "board_state_middle_right",
+            "board_state_bottom_left",
+            "board_state_bottom_middle",
+            "board_state_bottom_right",
+            "suggested_move_row",
+            "suggested_move_column",
+            "is_suggested_move_optimal",
+            "move_taken_row",
+            "move_taken_column"
+        ]
+
+        self._select_rows_to_file(GET_ALL_MOVES, columns, filepath)
