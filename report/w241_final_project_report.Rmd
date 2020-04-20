@@ -156,9 +156,9 @@ The treatment effect is the mean difference in outcomes between the treatment an
 ## Comparison of Potential Outcomes
 The potential outcomes are the proportion of moves made by an experimental subject that follow the directive suggestions in the course of tic-tac-toe game play. There are three types of potential outcomes in the experiment corresponding to the treatment assignments: control (no audio directive), treatment-female (female audio voice directive), and treatment-male (male audio voice directive). Those assigned to receive the control will see a visual suggestion with a square highlighted in the tic-tac-toe board. Formally, the potential outcomes in this study can be described as:
 
-$Y_i(TM=1)$: random variable representing the potential outcomes for a given experimental $i^{th}$ subject receiving the male voice audio treatment. 
-$Y_i(TF=1)$: random variable representing the potential outcomes for a given experimental $i^{th}$ subject receiving the female voice audio treatment. 
-$Y_i(T=0)$: random variable representing the potential outcomes for a given experimental $i^{th}$ subject receiving the control of no audio treatment, but rather a square highlighted in the tic-tac-toe board.
+- $Y_i(TM=1)$: random variable representing the potential outcomes for a given experimental $i^{th}$ subject receiving the male voice audio treatment. 
+- $Y_i(TF=1)$: random variable representing the potential outcomes for a given experimental $i^{th}$ subject receiving the female voice audio treatment. 
+- $Y_i(T=0)$: random variable representing the potential outcomes for a given experimental $i^{th}$ subject receiving the control of no audio treatment, but rather a square highlighted in the tic-tac-toe board.
 
 We can be assured through the construction of the online tic-tac-toe game and careful assignment process that those subjects assigned to the treatment groups will receive the treatment. In other words, those assigned to the treatment group, will not inadvertently not receive the control. Therefore, we can state that  the expected potential outcome for given subject randomly allocated to a treatment group is equal to the expected outcome for a given subject randomly allocated to a treatment group conditional on the subject actually receiving the treatment; formally, $E[Y_i(1)]$ = $E[Y_i(1)|d_i=1]$ for both the treatment-male and treatment-female voice recipients.
 
@@ -210,7 +210,7 @@ table(d$gender_string)
 summary(d$age, na.omit=FALSE)
 
 # histogram of age
-hist(d$age,main="Age distribution", xlab="Counts for age",ylab = "Frequency", breaks=50)
+hist(as.numeric(d$age),main="Age distribution", xlab="Counts for age",ylab = "Frequency", breaks=50)
 
 ```
 
@@ -294,14 +294,14 @@ table(d$assignment, d$age)
 assignment.labs <- c("Control", "Treatment-Female Voice", "Treatment-Male Voice")
 names(assignment.labs) <- c("C", "TF", "TM")
 
-ggplot(d,aes(x=age))+geom_histogram(bins=30)+ 
+ggplot(d,aes(x=as.numeric(age)))+geom_histogram(bins=30)+ 
   facet_grid(~assignment, labeller = labeller(assignment = assignment.labs))+
   labs(title = 'Histograms of age distribution by assignment group')+
   theme_bw()
 ```
 
 ## Discussion on Attrition
-There were 10 subjects that completed the pre-experiment survey, yet did not actually take the treatment by playing the games. As a result, we observed missing outcome data for these 10 subjects. We viewed this as an innocuous form of attrition since the missing data for the attriters is independent of potential outcomes (missing independent of potential outcomes, $Y_{i}(z) \perp \!\!\! \perp  R_{i}(z)$. This is satisfied by the research design since subjects were divided into random subgroups and outcomes were measured through different randomly assigned exposures unknown in advance. We observe that the attriters were approximately balanced across treatment assignment groups (2 in the control group, 4 in the male voice treatment and 4 in the female voice treatment) and therefore, we do not think that attrition is systematically related to a subject’s potential outcomes. Moreover, in performing a covariate balance check for these attriters, we find these subjects approximately balanced across covariates. See the plot of the gender and age distribution for attriters below. Give the benign nature of this attrition, we choose to exclude these subjects with missing outcomes in analyzing the experimental results. 
+There were 10 subjects that completed the pre-experiment survey, yet did not actually take the treatment by playing the games. As a result, we observed missing outcome data for these 10 subjects. We viewed this as an innocuous form of attrition since the missing data for the attriters is independent of potential outcomes (missing independent of potential outcomes, $Y_{i}(z) \perp \!\!\! \perp  R_{i}(z)$). This is satisfied by the research design since subjects were divided into random subgroups and outcomes were measured through different randomly assigned exposures unknown in advance. We observe that the attriters were approximately balanced across treatment assignment groups (2 in the control group, 4 in the male voice treatment and 4 in the female voice treatment) and therefore, we do not think that attrition is systematically related to a subject’s potential outcomes. Moreover, in performing a covariate balance check for these attriters, we find these subjects approximately balanced across covariates. See the plot of the gender and age distribution for attriters below. Give the benign nature of this attrition, we choose to exclude these subjects with missing outcomes in analyzing the experimental results. 
 
 ```{r read in final compliance rates data, include=FALSE, results='hide'}
 compliance_rates <- fread('../data/compliance_rates_final.csv')
@@ -503,34 +503,37 @@ The main model of our analysis investigates the suggested move compliance rate o
 
 - Linear model without interaction terms:
 
-$Y = \beta_{1}maleaudio + \beta_{2}femaleaudio + \beta_{3}gender + \beta_{4}age$
+$$Y = \beta_{1}maleaudio + \beta_{2}femaleaudio + \beta_{3}gender + \beta_{4}age$$
 
 - Linear model with interaction terms:
 
-$Y = \beta_{1}maleaudio + \beta_{2}femaleaudio + \beta_{3}gender + \beta_{4}age + \beta_{5}maleaudio*gender + \beta_{6}femaleaudio*gender + \beta_{7}maleaudio*age + \beta_{8}femaleaudio*age$
+$Y = \beta_{1}maleaudio + \beta_{2}femaleaudio +
+      \beta_{3}gender + \beta_{4}age + \beta_{5}maleaudio*gender +
+      \beta_{6}femaleaudio*gender + \beta_{7}maleaudio*age +
+      \beta_{8}femaleaudio*age$
 
 - Logistic regression model without interaction terms:
 
-$P(Y=1) = \beta_{1}maleaudio + \beta_{2}femaleaudio + \beta_{3}gender + \beta_{4}age$
+$$P(Y=1) = \beta_{1}maleaudio + \beta_{2}femaleaudio + \beta_{3}gender + \beta_{4}age$$
 
 or expressed in log-odds as:
 
-$LL = ln(\frac{p}{1-p})=\beta_{1}maleaudio + \beta_{2}femaleaudio + \beta_{3}gender + \beta_{4}age$
+$$LL = ln(\frac{p}{1-p})=\beta_{1}maleaudio + \beta_{2}femaleaudio + \beta_{3}gender + \beta_{4}age$$
 
 
 We estimated causal effects using the postulated  models over a sequence of analyses:
 
-- 1. Proportional compliance to suggested moves for all moves 
-- 2. Proportional compliance to suggested moves for optimal and non-optimal suggested moves
-- 3. Move-by-move compliance to suggested moves for all moves (using logistic regression)
-- 4. Proportional compliance to suggested moves for all moves by subject gender
-- 5. Proportional compliance to suggested moves by order of game
-- 6. Proportional compliance to suggested moves by order of move
+1. Proportional compliance to suggested moves for all moves 
+2. Proportional compliance to suggested moves for optimal and non-optimal suggested moves
+3. Move-by-move compliance to suggested moves for all moves (using logistic regression)
+4. Proportional compliance to suggested moves for all moves by subject gender
+5. Proportional compliance to suggested moves by order of game
+6. Proportional compliance to suggested moves by order of move
 
 Each of these estimates causal effects in an attempt to more fully comprehend the dynamic between move suggestions and game play strategy.
 
 ## Model Results
-The regression table below reports the model estimates, first with no covariates, then with additional covariates, robust standard errors, and clustered standard errors We clustered on subject identifier since each subject received one treatment throughout game play.
+The regression table below reports the model estimates, first with no covariates, then with additional covariates, robust standard errors, and clustered standard errors. We clustered on subject identifier since each subject received one treatment throughout game play.
 
 ```{r estimate regressions - naive and with covariates, include=FALSE, results='hide'}
 # naive regression of the comply rate on the assignment status 
@@ -653,7 +656,7 @@ stargazer(logistic_reg(data=all_moves), logistic_reg(data=all_moves),
 ```
 
 
-Exponentiating the coefficients, we can interpret the likelihoods of compliance with suggested moves as odds-ratios. We find that the female audio treatment effect increases odds of compliance with a suggested move by an infinite factor `r round(exp(coef(logistic_reg(all_moves))[2]),2)`, controlling for covariates and fixed effects. The male audio treatment effect increases odds of compliance with a suggested move by a factor of `r round(exp(coef(logistic_reg(all_moves))[3]),2)`. Being a male subject increases odds of compliance with a suggested move by a factor of `r round(exp(coef(logistic_reg(all_moves))[4]),2)`. 
+Exponentiating the coefficients, we can interpret the likelihoods of compliance with suggested moves as odds-ratios. We find that the female audio treatment effect increases odds of compliance with a suggested move by an infinite factor $`r round(exp(coef(logistic_reg(all_moves))[2]),2)`$, controlling for covariates and fixed effects. The male audio treatment effect increases odds of compliance with a suggested move by a factor of `r round(exp(coef(logistic_reg(all_moves))[3]),2)`. Being a male subject increases odds of compliance with a suggested move by a factor of `r round(exp(coef(logistic_reg(all_moves))[4]),2)`. 
 
 This model appears to reinforce the findings of the previous model, which is that audio directives are much more likely to be followed than visual directives. Female speakers has a stronger positive effect (larger odds of eliciting compliance with the suggested move directive).
 
@@ -835,7 +838,7 @@ t_test_result_nonoptimal_tf
 t_test_result_nonoptimal_t 
 ```
 
-Consistent with the regression results, from the t-tests we observe that the treatment effect for the male voice and female voice treatments for the optimal moves are statistically different from zero with a p-value in the t-test of `r round(t_test_result_optimal_tm$p.value,4)` and `r round(t_test_result_optimal_tf$p.value,4)`, respectively. We observe similar effects from the t-tests for the non-optimal moves with p-values of `r round(t_test_result_nonoptimal_tm$p.value,4)` and `r round(t_test_result_nonoptimal_tf$p.value,4)`, respectively. The effect between the gendered voice treatments for both optimal and non-optimal moves is statistically insignificant with a p-value in the t-test of `r round(t_test_result_optimal_t$p.value,4)` and `r round(t_test_result_nonoptimal_t$p.value,4)`. 
+Consistent with the regression results, from the t-tests we observe that the treatment effect for the male voice and female voice treatments for the optimal moves are statistically different from zero with a p-value in the t-test of $`r round(t_test_result_optimal_tm$p.value,4)`$ and `r round(t_test_result_optimal_tf$p.value,4)`, respectively. We observe similar effects from the t-tests for the non-optimal moves with p-values of `r round(t_test_result_nonoptimal_tm$p.value,4)` and `r round(t_test_result_nonoptimal_tf$p.value,4)`, respectively. The effect between the gendered voice treatments for both optimal and non-optimal moves is statistically insignificant with a p-value in the t-test of `r round(t_test_result_optimal_t$p.value,4)` and `r round(t_test_result_nonoptimal_t$p.value,4)`. 
 
 ### Evaluation of compliance to suggested moves based on gender of subject 
 
