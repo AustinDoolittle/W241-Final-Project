@@ -210,7 +210,8 @@ table(d$gender_string)
 summary(d$age, na.omit=FALSE)
 
 # histogram of age
-hist(as.numeric(d$age),main="Age distribution", xlab="Counts for age",ylab = "Frequency", breaks=50)
+hist(as.numeric(d$age),main="Age distribution", xlab="Counts for age",
+     ylab = "Frequency", breaks=50)
 
 ```
 
@@ -351,7 +352,10 @@ There are two possible forms of non-compliance: (1) not completing the full set 
 
 The first form of non-compliance is concerning for the experiment if subjects not completing the 5 tic-tac-toe games are not randomly related with their potential outcomes. That is, those who did not complete the games might be related to their treatment status. We do not view this a concern in the experiment as we found no subjects that did not complete all five tic-tac-toe games once initiating game play. 
 
-The second form of non-compliance here is subtle because we will not know if the participants choose to hear the directive or not (by keeping the audio down or off or listening to something else while playing), even if they complete the game. We do, however, have a screen prompt prior to game play where subjects are forced to verify that their audio is working before advancing to the game. The experiment requires experimental subjects to complete the game in isolation while online, therefore, as researchers, we have no way to tell whether the experimental subjects actually listen to the audio directives. This is a source of potential unobserved error that can undermine the observed treatment effect and a potential limitation of the study.
+The second form of non-compliance here is subtle because we will not know if the participants choose to hear the directive or not (by keeping the audio down or off or listening to something else while playing), even if they complete the game. We do, however, have a screen prompt prior to game play where subjects are forced to verify that their audio is working before advancing to the game. The experiment requires experimental subjects to complete the game in isolation while online, therefore, as researchers, we have no way to tell whether the experimental subjects actually listen to the audio directives. This is a source of potential unobserved error that can undermine the observed treatment effect and a potential limitation of the study. 
+
+From the issues that were self-reported in the post-treatment survey, we found that all audio-related issues were from the Control group. Since subjects in the Control group were not supposed to receive the audio voice treatment anyway, we find that this was a source of unobserved error that imperiled the study. 
+
 
 ## Discussion on Excludability
 The exclusion restriction is not violated in this study since only the relevant causal agent is the receipt of the treatment. That is, potential outcomes in following suggested directives respond solely to the receipt of the treatment, not to the random assignment of the treatment. Since subjects play the online tic-tac-toe game in isolation and only receive the programmed treatment or control, subjects must only be exposed to the treatment or control. As the experiment has been designed, the same procedures are used to measure outcomes in the treatment and control groups. No other research activities have been performed other than the treatment of interest that differentially impacts treatment and control groups.
@@ -363,11 +367,16 @@ However, non-interference may be violated if people conspire and speak to each o
 
 ## CONSORT
 
-The flow diagram starts with 72 subjects who signed up to participate in the study through outreach through social outlets by researchers. The 72 subjects were randomly allocated into three groups - control (no audio directive), treatment (male audio directive) and treatment (female audio directive) following a blocking design based on subject gender (male or female). Following the block randomization, roughly half of subjects were assigned to control (33 subjects) and the other half assigned to one of the treatment groups (39 subjects). Subjects assigned to treatment were randomly assigned to either the male audio directive treatment and female audio directive treatment (22 assigned to the male audio directive and 17 assigned to the female audio directive). Each subject was sent an email to play the series of tic-tac-toe games under their assigned experimental condition (control or treatment). The game play outcomes related to compliance to the directive, by move and overall compliance will be used for estimating the treatment effects. No attrition occurred in this randomized experiment.  
+The flow diagram starts with 72 subjects who signed up to participate in the study through outreach through social outlets by researchers. The 72 subjects were randomly allocated into three groups - control (no audio directive), treatment (male audio directive) and treatment (female audio directive) following a blocking design based on subject gender (male or female). Following the block randomization, roughly half of subjects were assigned to control (33 subjects) and the other half assigned to one of the treatment groups (39 subjects). Subjects assigned to treatment were randomly assigned to either the male audio directive treatment and female audio directive treatment (22 assigned to the male audio directive and 17 assigned to the female audio directive). Each subject was sent an email to play the series of tic-tac-toe games under their assigned experimental condition (control or treatment). The game play outcomes related to compliance to the directive, by move and overall compliance will be used for estimating the treatment effects. As discussed in the section on Attrition, ten subjects attrited from the randomized experiment.  
+
 
 ```{r assignment_diagram, fig.cap='Random Assignment Flow Chart', out.width='50%', fig.align='center', echo=FALSE, message=FALSE, warning=FALSE}
 knitr::include_graphics("./assignment_diagram.png")
 ```
+
+
+
+
 
 ## Power Calculation
 According to List et al. (2008), the power of a statistical test is the probability that it will correctly lead to the rejection of the null hypothesis (the probability of a Type II error is 1-power, and is equal to the probability of falsely not rejecting the null hypothesis). The idea behind the choice of optimal sample sizes in this scenario is that the sample sizes have to be just large enough so that the experimenter (1) does not falsely reject the null hypothesis that the population treatment and control outcomes are equal, i.e., commit a Type I error; and (2) does not falsely accept the null hypothesis when the actual difference is equal to $\delta$, i.e. commit a Type II error. A simple rule of thumb to maximize power given a fixed experimental budget naturally follows: the ratio of the sample sizes is equal to the ratio of the standard deviations of outcomes.
@@ -411,11 +420,6 @@ pwr.2p2n.test(h = effectsize, n1 = n_control , n2 = n_treatfemale ,
               sig.level = .05, power = NULL )
 
 ```
-
-```{r}
-round(pwr.2p2n.test(h = effectsize, n1 = n_control , n2 = n_treat , sig.level = .05, power = NULL)$power,1)*100
-```
-
 
 Following the  power of our study will be `r round(pwr.2p2n.test(h = effectsize, n1 = n_control , n2 = n_treat , sig.level = .05, power = NULL)$power,2)*100` percent, suggesting a moderately-powered experiment.
 
@@ -473,10 +477,11 @@ Subjects for our experiment were a collection of fellow students in the MIDS pro
 
 Treatment was administered via a custom designed web application. Emails were sent to the email addresses that were provided in the pre-treatment survey that contained links to the web application that were unique to the individual subjects, which allowed us to identify which subject was connecting to the web application. If the subject had not completed their assigned task within a week prior to the deadline listed in the email, an additional reminder email is sent out. The script of both of these emails can be found in the appendix.
 
+
 ```{r control_flow, fig.cap='Web-application control flow', out.width='50%', fig.align='center', echo=FALSE, message=FALSE, warning=FALSE}
 knitr::include_graphics("./control_flow.png")
 ```
-Figure x: Web-application control flow
+
 
 Upon arrival at the website, the user is greeted with a page that informs the subject that they are expected to fully complete the game, and navigation away from the game will invalidate their results. Those in either treatment group are shown a button which allows them to test their audio. On advancing to the next page of the website, subjects in the treatment group are also greeted with an additional audio test, which requires them to select a button on screen that corresponds to a verbal direction. Subjects in the treatment group are not allowed to advance to subsequent screens if they do not pass this audio validation check. The next page then notifies the user of the game that they will play, and informs them that the move suggestions that they receive may or may not be optimal.
 
@@ -498,7 +503,7 @@ This approach for suggesting a position was taken in order to discourage the sub
 
 On completion of five games, the subjects are brought to a final screen which thanks them for participating and contains a link to a post-experiment survey. This survey’s results were used to identify any technical glitches and inform some retrospective analysis of the experiment design.
 
-## Model
+# Model
 The main model of our analysis investigates the suggested move compliance rate of the subject dependent on whether the subject was in the control or one of the treatment groups. Our models can be expressed formally as:
 
 - Linear model without interaction terms:
@@ -524,16 +529,18 @@ $$LL = ln(\frac{p}{1-p})=\beta_{1}maleaudio + \beta_{2}femaleaudio + \beta_{3}ge
 We estimated causal effects using the postulated  models over a sequence of analyses:
 
 1. Proportional compliance to suggested moves for all moves 
-2. Proportional compliance to suggested moves for optimal and non-optimal suggested moves
-3. Move-by-move compliance to suggested moves for all moves (using logistic regression)
+2. Move-by-move compliance to suggested moves on a move-by-move basis for all moves (using logistic regression)
+3. Proportional compliance to suggested moves for optimal and non-optimal suggested moves
 4. Proportional compliance to suggested moves for all moves by subject gender
 5. Proportional compliance to suggested moves by order of game
 6. Proportional compliance to suggested moves by order of move
 
 Each of these estimates causal effects in an attempt to more fully comprehend the dynamic between move suggestions and game play strategy.
 
-## Model Results
-The regression table below reports the model estimates, first with no covariates, then with additional covariates, robust standard errors, and clustered standard errors. We clustered on subject identifier since each subject received one treatment throughout game play.
+# Model Results
+
+## Proportional compliance to suggested moves for all moves
+The regression table below reports the model estimates, first with no covariates, then with additional covariates with both robust standard errors, and clustered standard errors. We clustered on subject identifier since each subject received one treatment throughout game play.
 
 ```{r estimate regressions - naive and with covariates, include=FALSE, results='hide'}
 # naive regression of the comply rate on the assignment status 
@@ -590,7 +597,7 @@ stargazer(naive_reg, reg, reg, reg_interaction, reg_interaction,
 ```
 
 
-From the above plot, we see that voice directives have a statistically significant and positive effect on the willingness of a subject to take the move that was directed. We also see that the female speaker’s voice has a stronger effect on subject move compliance. The female voice treatment has coefficient estimate of `r coeftest(reg, reg$vcovCL1_)[2]` (with robust standard error of `r coeftest(reg, reg$vcovCL1_)[2,2]`). The male voice treatment has a coefficient estimate of `r coeftest(reg, reg$vcovCL1_)[3]` (with robust standard error of `r coeftest(reg, reg$vcovCL1_)[3,2]`).The coefficient for the age variable does indicate a very small, yet statistically significant, negative effect on the willingness to listen. The coefficient for gender is positive, but insignificant. 
+From the above plot, we see that voice directives have a statistically significant and positive effect on the willingness of a subject to take the move that was directed. We also see that the female speaker’s voice has a stronger effect on subject move compliance. The female voice treatment has coefficient estimate of `r round(coeftest(reg, reg$vcovCL1_)[2],2)` (with robust standard error of `r round(coeftest(reg, reg$vcovCL1_)[2,2],2)`). The male voice treatment has a coefficient estimate of `r round(coeftest(reg, reg$vcovCL1_)[3],2)` (with robust standard error of `r round(coeftest(reg, reg$vcovCL1_)[3,2],2)`).The coefficient for the age variable does indicate a very small, yet statistically significant, negative effect on the willingness to listen. The coefficient for gender is positive, but insignificant. 
 
 However, after including the interaction terms between gender and the treatment assignments and age and the treatment assignments, the coefficients for the treatments are no longer statistically significant. We observe that the standard errors increase with the inclusion of the interaction terms due to the collinearity between the interaction terms and the stand-alone covariates, male and female treatment assignment, gender and age. This is because the residual variance falls only slightly with the inclusion of the interaction terms, while the standard deviation of $\tilde{X}_{ki}$ increases (the residual of the regression of $X_{ki}$ on all other regressors). Only the coefficient on the `age` variable remains statistically significant across all regression specifications, although it is practically insignificant in size.
 
@@ -660,7 +667,7 @@ Exponentiating the coefficients, we can interpret the likelihoods of compliance 
 
 This model appears to reinforce the findings of the previous model, which is that audio directives are much more likely to be followed than visual directives. Female speakers has a stronger positive effect (larger odds of eliciting compliance with the suggested move directive).
 
-### Evaluation of compliance to suggested optimal verses non-optimal moves 
+## Evaluation of compliance to suggested optimal verses non-optimal moves 
 
 As discussed in the Experimental Design section, subjects randomly received optimal and non-optimal move suggestions throughout game play. In order to assess whether the main results were consistent for the optimal and non-optimal move suggestions, we estimated the treatment effects on the subset of the data corresponding to the two type of move suggestions. 
 
@@ -733,29 +740,31 @@ kable(complyratesbytreatment(dt=all_moves_nonoptimal))
 
 However, the estimated treatment effects are larger for the non-optimal move suggestions. This gives evidence that people are differentially listening to the audio when making their moves strategically over the course of play. 
 
-```{r estimate treatment effects, include=TRUE}
-#complyratesbytreatment(dt=all_moves_optimal)
-par(mfrow=c(3,2))
-print('ATE for Male Treatment over optimal moves:')
-round(ate_treatmentmale(dt=all_moves_optimal),3)
-print('ATE for Male Treatment over nonoptimal moves:')
-round(ate_treatmentmale(dt=all_moves_nonoptimal),3)
 
-print('ATE for Female Treatment over optimal moves:')
-round(ate_treatmentfemale(dt=all_moves_optimal),3)
-print('ATE for Female Treatment over nonoptimal moves:')
-round(ate_treatmentfemale(dt=all_moves_nonoptimal),3)
+```{r estimate treatment effects, include=FALSE}
+ate_optimal_m_lbl <- 'ATE for Male Treatment over optimal moves:'
+ate_optimal_f_lbl <- 'ATE for Female Treatment over optimal moves:'
+ate_nonoptimal_m_lbl <- 'ATE for Male Treatment over nonoptimal moves:'
+ate_nonoptimal_f_lbl <- 'ATE for Female Treatment over nonoptimal moves:'
 
-kable(ate_treatmentmale(dt=all_moves_optimal))
-kable(ate_treatmentmale(dt=all_moves_nonoptimal))
-
-kable(ate_treatmentfemale(dt=all_moves_optimal))
-kable(ate_treatmentfemale(dt=all_moves_nonoptimal))
-
-kable(ate_treatment_btwnmalefemale(dt=all_moves_optimal))
-kable(ate_treatment_btwnmalefemale(dt=all_moves_nonoptimal))
+ate_optimal_m <- round(ate_treatmentmale(dt=all_moves_optimal),3)
+ate_optimal_f <- round(ate_treatmentfemale(dt=all_moves_optimal),3)
+ate_nonoptimal_m <- round(ate_treatmentmale(dt=all_moves_nonoptimal),3)
+ate_nonoptimal_f <- round(ate_treatmentfemale(dt=all_moves_nonoptimal),3)
 
 ```
+
+
+```{r estimate treatment effects tables, include=TRUE}
+
+kable(cbind(c(ate_optimal_m_lbl, ate_nonoptimal_m_lbl),
+      c(ate_optimal_m, ate_nonoptimal_m)))
+
+kable(cbind(c(ate_optimal_f_lbl, ate_nonoptimal_f_lbl),
+      c(ate_optimal_f, ate_nonoptimal_f)))
+
+```
+
 
 Below we report the linear model estimates in two separate tables for optimal and non-optimal moves. Each table shows estimates in the first column with gender and age covariates reporting robust standard errors, second column with clustered standard errors (clustering on subject identifier), third column with interaction terms reporting robust standard errors, and fourth column with interaction terms with clustered standard errors (clustering on subject identifier). 
 
@@ -840,7 +849,7 @@ t_test_result_nonoptimal_t
 
 Consistent with the regression results, from the t-tests we observe that the treatment effect for the male voice and female voice treatments for the optimal moves are statistically different from zero with a p-value in the t-test of $`r round(t_test_result_optimal_tm$p.value,4)`$ and `r round(t_test_result_optimal_tf$p.value,4)`, respectively. We observe similar effects from the t-tests for the non-optimal moves with p-values of `r round(t_test_result_nonoptimal_tm$p.value,4)` and `r round(t_test_result_nonoptimal_tf$p.value,4)`, respectively. The effect between the gendered voice treatments for both optimal and non-optimal moves is statistically insignificant with a p-value in the t-test of `r round(t_test_result_optimal_t$p.value,4)` and `r round(t_test_result_nonoptimal_t$p.value,4)`. 
 
-### Evaluation of compliance to suggested moves based on gender of subject 
+## Evaluation of compliance to suggested moves based on gender of subject 
 
 We block randomized subjects into treatment assignments by their gender. This design has the benefit of allowing us to estimate treatment effects for each block. Therefore, we estimated the treatment effects on the subset of the data corresponding to the male and female subjects separately. Below, we report the regression table from our postulated model where the outcome remains the proportional compliance rates.
 
@@ -904,7 +913,7 @@ We find that the treatment effects of the gendered audio voices are statisticall
 
 For the female subjects, the treatment effects are statistically insignificant. The effect from female audio voice is `r round(coeftest(reg_female,reg_female$vcovHC_)[2],3)` with robust standard error of `r round(coeftest(reg_female,reg_female$vcovHC_)[2,2],3)`, while for the male audio voice the estimated treatment effect is `r coeftest(reg_female,reg_female$vcovHC_)[3]` with robust standard error of `r round(coeftest(reg_female,reg_female$vcovHC_)[3,2],3)`.
 
-### Evaluation of compliance to suggested moves based on order of game 
+## Evaluation of compliance to suggested moves based on order of game 
 
 As an ancillary analysis to assess how the game strategy interplays with the audio directives, we estimated the treatment effects by game number. This would theoretically allow us to observe whether there is a trend in compliance rates as the number of games played increases. For instance, compliance may be higher at game 1 than game 3, 4 or 5.
 
@@ -983,7 +992,7 @@ stargazer(reg(all_moves_game0_agg), reg(all_moves_game1_agg),
 ```
 
 
-### Evaluation of compliance to suggested moves based on order of move 
+## Evaluation of compliance to suggested moves based on order of move 
 
 As a further ancillary analysis to assess how the game strategy interplays with the audio directives, we estimated the treatment effects by move number. This would theoretically allow us to observe whether there is a trend in compliance rates as the number of moves played increases within any given game. For instance, compliance may be higher at move 1 when there is less strategic importance to complying or not to a random suggestion than compliance in a second or third move.  We assessed the causal treatment effects over the first three moves only, as all subjects would have played at least three moves in any given game.
 
@@ -1046,15 +1055,7 @@ stargazer(reg(all_moves_move1_agg), reg(all_moves_move2_agg),reg(all_moves_move3
           header=F)
 ```
 
-# Result
-The study does not have sufficient power to answer our initial research question of whether the gender of a speaker will affect the willingness of a listener to follow their direction. However, we do see a strong sustained effect of voice directives over visual directives on a subject’s willingness to comply with suggestions. This is supported by our observation of consistently higher compliance rates among those in the treatment compared to those in the control.
 
-We find that the effect of the female speaker is higher than the effect of the male speaker, albeit not a statistically significant difference. It is clear from our experiment that a follow up experiment should be conducted in order to examine this hypothesis more closely. The follow up experiment should include a much larger subject pool and should also include more rigid data collection strategies such that we reduce the number of attriters in the study.
-*Story is: We don’t have sufficient power to differentiate between the effects of gender on compliance, but we do see that there is a strong sustained effect of voice directives*
-
-Voice directions have a significant, positive effect (both male and female voice directives) in game play. We find a significant treatment effect in overall comply rates with suggested moves taken and persistence in observing these treatment effects throughout continual game play, on a by-move and by-game basis.
-While the effect is slightly stronger for the female voice treatment, we cannot conclude that there is a gender bias in voice directives. The difference in comply rates with suggested moves between male and female voice treatment is not distinguishable from zero. 
-Moreover, our study is too low-powered to provide credible evidence of the existence of gendered voice bias one way or the other.
 
 ## Post-treatment power calculation
 
@@ -1095,7 +1096,15 @@ The power of our effects are  `r round(pwr_est_tm$power,2)*100` percent and `r r
 The sample sizes required to achieve 50% power for the observed effect size of the male audio voice treatment was `r round(pwr_tm$n,0)` and observed effect size of the female audio voice treatment is `r round(pwr_tf$n,0)`. This represents a roughly `r round(pwr_tm$n/n_treatmale,0)` and `r round(pwr_tf$n/n_treatfemale,0)` fold increase in the subject pool we actually had in our experiment.
 
 
-# Conclusions
+# Result
+The study does not have sufficient power to answer our initial research question of whether the gender of a speaker will affect the willingness of a listener to follow their direction. However, we do see a strong sustained effect of voice directives over visual directives on a subject’s willingness to comply with suggestions. This is supported by our observation of consistently higher compliance rates among those in the treatment compared to those in the control.
+
+We find that the effect of the female speaker is higher than the effect of the male speaker, albeit not a statistically significant difference. It is clear from our experiment that a follow up experiment should be conducted in order to examine this hypothesis more closely. The follow up experiment should include a much larger subject pool and should also include more rigid data collection strategies such that we reduce the number of attriters in the study.
+*Story is: We don’t have sufficient power to differentiate between the effects of gender on compliance, but we do see that there is a strong sustained effect of voice directives*
+
+Voice directions have a significant, positive effect (both male and female voice directives) in game play. We find a significant treatment effect in overall comply rates with suggested moves taken and persistence in observing these treatment effects throughout continual game play, on a by-move and by-game basis.
+While the effect is slightly stronger for the female voice treatment, we cannot conclude that there is a gender bias in voice directives. The difference in comply rates with suggested moves between male and female voice treatment is not distinguishable from zero. 
+Moreover, our study is too low-powered to provide credible evidence of the existence of gendered voice bias one way or the other.
 
 
 # Appendix
