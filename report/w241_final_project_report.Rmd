@@ -370,11 +370,10 @@ However, non-interference may be violated if people conspire and speak to each o
 The flow diagram starts with 72 subjects who signed up to participate in the study through outreach through social outlets by researchers. The 72 subjects were randomly allocated into three groups - control (no audio directive), treatment (male audio directive) and treatment (female audio directive) following a blocking design based on subject gender (male or female). Following the block randomization, roughly half of subjects were assigned to control (33 subjects) and the other half assigned to one of the treatment groups (39 subjects). Subjects assigned to treatment were randomly assigned to either the male audio directive treatment and female audio directive treatment (22 assigned to the male audio directive and 17 assigned to the female audio directive). Each subject was sent an email to play the series of tic-tac-toe games under their assigned experimental condition (control or treatment). The game play outcomes related to compliance to the directive, by move and overall compliance will be used for estimating the treatment effects. As discussed in the section on Attrition, ten subjects attrited from the randomized experiment.  
 
 
+
 ```{r assignment_diagram, fig.cap='Random Assignment Flow Chart', out.width='50%', fig.align='center', echo=FALSE, message=FALSE, warning=FALSE}
 knitr::include_graphics("./assignment_diagram.png")
 ```
-
-
 
 
 
@@ -382,7 +381,7 @@ knitr::include_graphics("./assignment_diagram.png")
 According to List et al. (2008), the power of a statistical test is the probability that it will correctly lead to the rejection of the null hypothesis (the probability of a Type II error is 1-power, and is equal to the probability of falsely not rejecting the null hypothesis). The idea behind the choice of optimal sample sizes in this scenario is that the sample sizes have to be just large enough so that the experimenter (1) does not falsely reject the null hypothesis that the population treatment and control outcomes are equal, i.e., commit a Type I error; and (2) does not falsely accept the null hypothesis when the actual difference is equal to $\delta$, i.e. commit a Type II error. A simple rule of thumb to maximize power given a fixed experimental budget naturally follows: the ratio of the sample sizes is equal to the ratio of the standard deviations of outcomes.
 
 
-In our experiment, we assume the hypothetical effect size to be achieved should be 0.5, whereby average compliance rate for those in the control is $p$=0.5 and average compliance rate for those in the treatment is $p$=1. We understand that this might be reaching a bit with this hypothetical effect size since an average compliance rate of $p$=1 is the most extreme upward bound. It is likely that the realized treatment effect will be smaller in the experiment.  Below we discuss the effect on power using smaller effect sizes and illustrate the strength of power over effect size-sample size space.
+Prior to our experiment, we assumed that the hypothetical effect size to be achieved should be 0.5, whereby average compliance rate for those in the control is $p$=0.5 and average compliance rate for those in the treatment is $p$=1. We understand that this might be reaching a bit with this hypothetical effect size since an average compliance rate of $p$=1 is the most extreme upward bound. It is likely that the realized treatment effect will be smaller in the experiment.  Below we discuss the effect on power using smaller effect sizes and illustrate the strength of power over effect size-sample size space.
 
 We compute the appropriate sample size for the given effect size, significance level and power using the test of proportions. 
 
@@ -421,7 +420,7 @@ pwr.2p2n.test(h = effectsize, n1 = n_control , n2 = n_treatfemale ,
 
 ```
 
-Following the  power of our study will be `r round(pwr.2p2n.test(h = effectsize, n1 = n_control , n2 = n_treat , sig.level = .05, power = NULL)$power,2)*100` percent, suggesting a moderately-powered experiment.
+Following the collecting of subjects in the pre-treatement survey phase, the power of our study would be expected to be `r round(pwr.2p2n.test(h = effectsize, n1 = n_control , n2 = n_treat , sig.level = .05, power = NULL)$power,2)*100` percent, suggesting a moderately-powered experiment.
 
 If we consider the studies with the individual treatment effects (male and female audio) only, and assuming our hypothetical anticipated effect size, the power would have been `r round(pwr.2p2n.test(h = effectsize, n1 = n_control , n2 = n_treatmale , sig.level = .05, power = NULL)$power,2)*100` percent and `r round(pwr.2p2n.test(h = effectsize, n1 = n_control , n2 = n_treatfemale , sig.level = .05, power = NULL)$power,2)*100` percent for the male and female audio treatment studies, respectively.
 
@@ -540,6 +539,50 @@ Each of these estimates causal effects in an attempt to more fully comprehend th
 # Model Results
 
 ## Proportional compliance to suggested moves for all moves
+
+We find the compliance to suggested moves are higher for the gendered voice treatment groups with a slightly larger compliance rates for the female audio voice. The table below shows the compliance rates to suggested moves by assignment status. 
+
+```{r functions to estimate comply rates for all moves, include=FALSE}
+
+# show mean comply rates by assignment status in the pilot
+complyrates <- function(dt) { 
+  return(dt[,.('mean_comply_rate'=mean(comply_rate)),keyby=.(assignment_status)])
+  }
+
+# estimate treatment effect for the male voice treatment
+ate_tm <- function(dt) {
+  return(mean(dt[dt$assignment_status=='TM',]$comply_rate)-mean(dt[dt$assignment_status=='C',]$comply_rate))
+}
+
+# estimate treatment effect for the female voice treatment
+ate_tf <- function(dt) {
+  return(mean(dt[dt$assignment_status=='TF',]$comply_rate)-mean(dt[dt$assignment_status=='C',]$comply_rate))
+}
+
+ate_tm_lbl <- 'ATE for Male Treatment for all moves:'
+ate_tf_lbl <- 'ATE for Female Treatment for all moves:'
+
+ate_tm <- round(ate_tm(dt=final_compliers),3)
+ate_tf <- round(ate_tf(dt=final_compliers),3)
+
+```
+
+
+```{r comply rates to all moves by assignment status, include=TRUE}
+kable(complyrates(dt=final_compliers))
+
+```
+
+
+
+The estimated treatment effects are larger for the female audio voice treatment as seen from the table below.
+
+```{r estimate treatment effects for all moves, include=TRUE}
+kable(cbind(c(ate_tm_lbl, ate_tf_lbl),c(ate_tm, ate_tf)))
+```
+
+The ATE for the female audio treatment of `r round(ate_tf,2)` is greater than the ATE for the male audio treatment of `r round(ate_tm,2)`.
+
 The regression table below reports the model estimates, first with no covariates, then with additional covariates with both robust standard errors, and clustered standard errors. We clustered on subject identifier since each subject received one treatment throughout game play.
 
 ```{r estimate regressions - naive and with covariates, include=FALSE, results='hide'}
@@ -587,12 +630,20 @@ coeftest(reg, reg$vvcovCL1_)
 ```{r stargazer of regression results, include=TRUE}
 # report the formatted regression results
 stargazer(naive_reg, reg, reg, reg_interaction, reg_interaction,
-          type = 'text', 
-          se=list(naive_reg$robustse, reg$robustse, reg$cluster1se,
-                  reg_interaction$robustse, reg_interaction$cluster1se),
+          type = 'text', title="Main regression results for all move suggestions",
+          align=TRUE, dep.var.labels=c("Proportional compliance rate with suggested moves"),
+          covariate.labels=c("Treatment-Female","Treatment-Male","Male gender",
+                                "Age","TF-Male","TM-Male","TF-Age","TM-Age"),
+          se=list(naive_reg$robustse, 
+                    reg$robustse, 
+                    reg$cluster1se,
+                    reg_interaction$robustse, 
+                    reg_interaction$cluster1se),
           add.lines = list(c('SE', 'Robust', 'Robust', 'Clustered', 
                              'Robust', 'Clustered')),
-          no.space = TRUE,align=TRUE,table.placement="H",
+          no.space = FALSE,table.placement="t",
+          omit.stat = c('ser', 'F'),
+          column.sep.width = "0.1pt",
           header=F)
 ```
 
@@ -603,29 +654,27 @@ However, after including the interaction terms between gender and the treatment 
 
 We conducted a two-sample proportional t-test to observe that the difference between male and female voice directives is not statistically significant. We caution that the sample sizes are too small to render any meaningfully power to these effects. See the R code below for the t-test. 
 
-```{r, include=FALSE}
+```{r ttest compute, include=FALSE}
 # vectors with bids for control and treatment groups
 final_tm <- final_compliers[final_compliers$assignment_status=='TM', comply_rate]
 final_tf <- final_compliers[final_compliers$assignment_status=='TF', comply_rate]
 final_c <- final_compliers[final_compliers$assignment_status=='C', comply_rate]
 final_t <- final_compliers[final_compliers$assignment_status!='C', comply_rate]
-```
-
-
-```{r ttest, include=TRUE, hide='results'}
 
 # conduct a two-sample t-test and save results to t_test_result variable
 t_test_result_tm <- t.test(final_tm, final_c)
-t_test_result_tm
-
 t_test_result_tf <- t.test(final_tf, final_c)
-t_test_result_tf
-
 t_test_result_t <- t.test(final_tm, final_tf)
+```
+
+
+```{r report ttest results, include=TRUE, hide='results'}
+t_test_result_tm
+t_test_result_tf
 t_test_result_t
 ```
 
-Consistent with the regression results, we observe that the treatment effect for the male voice and female voice treatments are statistically different from zero with a p-value in the t-test of `r round(t_test_result_tm$p.value,4)` and `r round(t_test_result_tf$p.value,4)`, respectively. The effect between the gendered voice treatments is statistically insignificant with a p-value in the t-test of `r round(t_test_result_t$p.value,4)`.  
+Consistent with the regression results, we observe that the treatment effects for the male and female audio voice treatments are statistically different from zero with a p-value in their respective two sample t-tests of `r round(t_test_result_tm$p.value,4)` and `r round(t_test_result_tf$p.value,4)`, respectively. The treatment effect between the gendered voice treatments is statistically insignificant with a p-value in the t-test of `r round(t_test_result_t$p.value,4)`.  
 
 ## Evaluation of compliance with suggestions on a move-by-move basis
 
@@ -653,6 +702,8 @@ stargazer(logistic_reg(data=all_moves), logistic_reg(data=all_moves),
           type = 'text', 
           se = list(robust_se(logistic_reg(data=all_moves)), 
                     cluster_se(logistic_reg(data=all_moves),all_moves)),
+          covariate.labels=c("Treatment-Female","Treatment-Male",
+                             "Male gender","Age"),
           add.lines = list(c('Fixed Effects','Yes','Yes'),
                            c('SE', 'Robust', 'Clustered')),
           omit.stat = c('ser', 'F'),
@@ -794,6 +845,8 @@ stargazer(reg_optimal, reg_optimal, reg_interaction_optimal, reg_interaction_opt
                     cluster_se(reg(data=optimal_moves_agg),optimal_moves_agg),
                     robust_se(reg_interaction(data=optimal_moves_agg)), 
                     cluster_se(reg_interaction(data=optimal_moves_agg),optimal_moves_agg)),
+          covariate.labels=c("Treatment-Female","Treatment-Male","Male gender",
+                                "Age","TF-Male","TM-Male","TF-Age","TM-Age"),
           add.lines = list(c('Move Type', 'Optimal', 'Optimal', 'Optimal', 'Optimal'),
                            c('SE', 'Robust', 'Clustered', 'Robust', 'Clustered')),
           omit.stat = c('ser', 'F'),
@@ -811,6 +864,8 @@ stargazer(reg(data=nonoptimal_moves_agg), reg(data=nonoptimal_moves_agg),
                     cluster_se(reg(data=nonoptimal_moves_agg),nonoptimal_moves_agg),
                     robust_se(reg_interaction(data=nonoptimal_moves_agg)), 
                     cluster_se(reg_interaction(data=nonoptimal_moves_agg),nonoptimal_moves_agg)),
+          covariate.labels=c("Treatment-Female","Treatment-Male","Male gender",
+                                "Age","TF-Male","TM-Male","TF-Age","TM-Age"),
           add.lines = list(c('Move Type', 'Nonoptimal', 'Nonoptimal', 'Nonoptimal', 'Nonoptimal'),
                            c('SE', 'Robust', 'Clustered', 'Robust', 'Clustered')),
           omit.stat = c('ser', 'F'),
@@ -905,6 +960,7 @@ stargazer(reg_male, reg_male,reg_female,reg_female,
                     cluster_se(reg_female,all_moves_female_agg)),
           add.lines = list(c('Subject Gender','Male','Male','Female','Female'),
                            c('SE', 'Robust', 'Clustered','Robust','Clustered')),
+          covariate.labels=c("Treatment-Female","Treatment-Male","Age"),
           omit.stat = c('ser', 'F'),
           header=F)
 ```
@@ -985,6 +1041,8 @@ stargazer(reg(all_moves_game0_agg), reg(all_moves_game1_agg),
                     cluster_se(reg(data=all_moves_game2_agg),all_moves_game2_agg),
                     cluster_se(reg(data=all_moves_game3_agg),all_moves_game3_agg),
                     cluster_se(reg(data=all_moves_game4_agg),all_moves_game4_agg)),
+          covariate.labels=c("Treatment-Female","Treatment-Male",
+                             "Male gender","Age"),
           add.lines = list(c('Games','Game1','Game2','Game3','Game4','Game5'),
                            c('SE', 'Clustered', 'Clustered','Clustered','Clustered','Clustered')),
           omit.stat = c('ser', 'F'),
@@ -1051,6 +1109,8 @@ stargazer(reg(all_moves_move1_agg), reg(all_moves_move2_agg),reg(all_moves_move3
                     cluster_se(reg(all_moves_move3_agg),all_moves_move3_agg)),
           add.lines = list(c('Move Order No.','Move 1','Move 2','Move 3'),
                            c('SE', 'Clustered', 'Clustered','Clustered')),
+          covariate.labels=c("Treatment-Female","Treatment-Male",
+                             "Male gender","Age"),
           omit.stat = c('ser', 'F'),
           header=F)
 ```
