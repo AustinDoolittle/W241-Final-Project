@@ -153,7 +153,7 @@ There is one main measured outcome in the study: the proportion $p_{all}$ of all
 
 As an extension, we also examined the treatment effects through the interplay of strategy and audio directives by examining: the proportion $p_{optimal}$ of moves that the subject follows the recommendation of the directive when the move is strategically optimal over the course of playing the online tic-tac-toe games; and the
 proportion $p_{nonoptimal}$ of moves that the subject follows the recommendation of the directive when the move is not strategically optimal (but, rather random) over the course of playing the online tic-tac-toe games. Finally, we examined treatment effects for more micro-level strategy over the course of game play. We examined the
-proportion $p_bygame$ of moves that the subject follows the recommendation of the directive in each ordered game over the course of playing the five online tic-tac-toe games (i.e. game 1, game 2, game 3, game 4 and game 5); and proportion $p_{bymove}$ of moves that the subject follows the recommendation of the directive in
+proportion $p_{bygame}$ of moves that the subject follows the recommendation of the directive in each ordered game over the course of playing the five online tic-tac-toe games (i.e. game 1, game 2, game 3, game 4 and game 5); and proportion $p_{bymove}$ of moves that the subject follows the recommendation of the directive in
 each ordered move within a given game over the course of play (i.e. move 1, move 2, move 3).
 
 Finally, we also examined the treatment effects on the likelihoods that a subject follows the recommendation of the directive for any given move through a logistic regression analysis.
