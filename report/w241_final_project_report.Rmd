@@ -132,7 +132,7 @@ cluster_se <- function(mod, data) {
 
 > "I personally take the subway in New York. I love the subway because of the male and female voices that narrate the subway... 
 > that man and that woman. The woman who does the subway announcements and her way too loud husband. 
-> You know the woman who is like, (in a soft female voice) “The next stop is Christopher Street.” 
+> You know the woman who is like, (in a soft female voice) "The next stop is Christopher Street."
 > (in a strong male voice) "STAND CLEAR OF THE CLOSING DOORS PLEASE!".
 > I asked my friend who works for the city, why is it a male voice and a female voice. And he told me because it’s been proven 
 > that people take information from a female voice, but they will only take a warning from a male voice. Now that’s its own 
@@ -1168,23 +1168,33 @@ Moreover, our study is too low-powered to provide credible evidence of the exist
 
 
 # Appendix
-##Pre-treatment survey
+## Pre-treatment survey
 What is your gender? [Multiple Choice]
+
 - Male
 - Female
+
 What is your age? [Free-entry]
+
 What is a good contact email? [Free-entry]
+
 Do you consent to taking part in a study that will require you to play a game through a browser based web application with the use of audio (Approximately 10 minutes)? [Multiple Choice]
+
 - Yes
 - No
 
 ## Post-treatment survey contents
 Did you experience any technical issues? [Multiple Choice]
+
 - Yes
 - No
+
 If you experienced technical issues please describe below: [Free entry]
+
 Was the audio clear? [Multiple Choice]
+
 How long did it take you (in minutes) to complete the 5 games? If you exited the game early please write NA. [Free-entry]
+
 What is a good contact email? [Free-entry]
 
 ## Email scripts
