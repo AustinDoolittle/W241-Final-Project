@@ -149,9 +149,14 @@ The experimental study attempts to isolate the effects that a speaker’s gender
 ## Discussion of the Treatment
 In order to estimate the effect of a gender bias in following directions, we designed an online tic-tac-toe game whereby participants hear audio directive cues to make play moves in gendered voices (male or female). The treatment is the audio directive to make a given move while playing tic-tac-toe against a computer adversary as well as a visual indicator over the suggested square to make a move. The control group receives no audio directive, but rather, a visual indicator over the suggested square to make a move. Audio (for the treatment) and visual (for the control) suggestions are provided randomly with some moves provided as optimal moves and other moves as random, likely sub-optimal, suggestions following a random process. 
 
-There are two measured outcomes in the study: (1) the proportion $p_{all}$ of all moves that the subject follows the recommendation of the directive over the course of playing the online tic-tac-toe games; (2) the proportion $p_{optimal}$ of optimal moves that the subject follows the recommendation of the directive over the course of playing the online tic-tac-toe games. The measured outcomes in (1) would presumably prevent the subject from always taking the suggested directive through natural game play since the subjects may receive random sub-optimal directives. If all suggested moves are optimal, as in the case of measured outcomes in (2), the proportion of moves followed would indicate how well subjects follow suggested directives given the treatment received. 
+There is one main measured outcome in the study: the proportion $p_{all}$ of all moves that the subject follows the recommendation of the directive over the course of playing the online tic-tac-toe games. While subjects randomly receive both strategically optimal and non-optimal moves, the main measured outcome attempts to capture the generalized treatment effect for all suggested moves. The treatment effect is the mean difference in outcomes between the treatment and control group, given the treatment is received. The experimental concern of interest is how the gender of the speaker affects the experimental subject’s willingness to listen in direct comparison to the control group’s willingness to listen.
 
-The treatment effect is the mean difference in outcomes between the treatment and control group, given the treatment is received. The experimental concern of interest is how the gender of the speaker affects the experimental subject's willingness to listen in direct comparison to the control group's willingness to listen. Using the measured outcomes in (1) attempts to capture the generalized treatment effect for all suggested moves. Using the measured outcomes in (2) attempts to capture the treatment effect for optimal suggested moves.
+As an extension, we also examined the treatment effects through the interplay of strategy and audio directives by examining: the proportion $p_{optimal}$ of moves that the subject follows the recommendation of the directive when the move is strategically optimal over the course of playing the online tic-tac-toe games; and the
+proportion $p_{nonoptimal}$ of moves that the subject follows the recommendation of the directive when the move is not strategically optimal (but, rather random) over the course of playing the online tic-tac-toe games. Finally, we examined treatment effects for more micro-level strategy over the course of game play. We examined the
+proportion $p_bygame$ of moves that the subject follows the recommendation of the directive in each ordered game over the course of playing the five online tic-tac-toe games (i.e. game 1, game 2, game 3, game 4 and game 5); and proportion $p_{bymove}$ of moves that the subject follows the recommendation of the directive in
+each ordered move within a given game over the course of play (i.e. move 1, move 2, move 3).
+
+Finally, we also examined the treatment effects on the likelihoods that a subject follows the recommendation of the directive for any given move through a logistic regression analysis.
 
 ## Comparison of Potential Outcomes
 The potential outcomes are the proportion of moves made by an experimental subject that follow the directive suggestions in the course of tic-tac-toe game play. There are three types of potential outcomes in the experiment corresponding to the treatment assignments: control (no audio directive), treatment-female (female audio voice directive), and treatment-male (male audio voice directive). Those assigned to receive the control will see a visual suggestion with a square highlighted in the tic-tac-toe board. Formally, the potential outcomes in this study can be described as:
@@ -424,9 +429,8 @@ Following the collecting of subjects in the pre-treatement survey phase, the pow
 
 If we consider the studies with the individual treatment effects (male and female audio) only, and assuming our hypothetical anticipated effect size, the power would have been `r round(pwr.2p2n.test(h = effectsize, n1 = n_control , n2 = n_treatmale , sig.level = .05, power = NULL)$power,2)*100` percent and `r round(pwr.2p2n.test(h = effectsize, n1 = n_control , n2 = n_treatfemale , sig.level = .05, power = NULL)$power,2)*100` percent for the male and female audio treatment studies, respectively.
 
-As an exposition, we can visualize power curves below to understand the relationship with effect size and sample size. Intuitively, to achieve an adequately-powered small effect size, we would need larger sample sizes. 
 
-```{r power curves visualization, include=TRUE, results='hide'}
+```{r power curves visualization, include=FALSE, results='hide'}
 # power values
 p <- seq(.2,.9,.1)
 np <- length(p)
@@ -467,7 +471,7 @@ legend("topright", title="Power", as.character(p),
 ```
 
 
-In the actual study, we accounting for attrition, we had just `r nrow(final_compliers)` subjects in the experiment and therefore, could not achieve the power targeted a priori. Moreover, as we discuss in the Results section, our treatment effects were substantially smaller than 0.5. We report the actual power of the experiment in the Results sub-section "Post-treatment power calculation".
+In the actual study, accounting for attrition, we had `r nrow(final_compliers)` subjects in the experiment and therefore, could not achieve the power targeted prior to conducting the experiement. Moreover, as we discuss in the Results section, our treatment effects were substantially smaller than 0.5. We report the actual power of the experiment in the Results sub-section "Post-treatment power calculation".
 
 
 
@@ -678,7 +682,7 @@ Consistent with the regression results, we observe that the treatment effects fo
 
 ## Evaluation of compliance with suggestions on a move-by-move basis
 
-We examined the effects of a speaker giving voice directives on a move-by-move basis. Instead of the outcome being the proportion of all moves complied with, the outcome in this analysis is the binary outcome of compliance (0 or 1) for a given move suggestion. We estimated a logistic regression of the binary comply outcome on the treatment assignment status adjusting for the subject gender and age covariates and with subject id-level fixed effects might tell a more nuanced story. Report results with both robust standard errors and clustering at the subject ID level. Clustering at the subject ID level is important since the number of the moves (and therefore, number of observations) may differ across subjects. Clustering ensures that the standard errors reflects the tighter variation introduced at the subject identifier level. The table below shows the logistic regression results reporting coefficients as logits. 
+We examined the effects of a speaker giving voice directives on the likelihood of compliance with a given suggested move. Instead of the outcome being the proportion of all moves complied with, the outcome in this analysis is the binary outcome of compliance (0 or 1) for a given move suggestion. We estimated a logistic regression of the binary comply outcome on the treatment assignment status adjusting for the subject gender and age covariates and with subject id-level fixed effects might tell a more nuanced story. Report results with both robust standard errors and clustering at the subject ID level. Clustering at the subject ID level is important since the number of the moves (and therefore, number of observations) may differ across subjects. Clustering ensures that the standard errors reflects the tighter variation introduced at the subject identifier level. The table below shows the logistic regression results reporting coefficients as logits. 
 
 
 ```{r read in all moves dataset and create subsets for optimal and non-optimal suggested moves, include=FALSE}
@@ -874,7 +878,7 @@ stargazer(reg(data=nonoptimal_moves_agg), reg(data=nonoptimal_moves_agg),
 ```
 
 
-When breaking out comparison down by the optimal and non-optimal moves, we still see that the directives delivered by audio lead to a higher and statistically significant move compliance rate regardless of whether the move is optimal or not. This further supports our initial findings that compliance rates differ between audio and visual directions. We note that the effect is stronger in size for the non-optimal moves for both gendered voices, suggesting that subjects listen regardless of game strategy Compare the size of the coefficient estimates for the female and male audio treatments, respectively, (`r reg(data=optimal_moves_agg)$coefficients[2]` and `r reg(data=optimal_moves_agg)$coefficients[3]`) for optimal moves verses nonoptimal moves (`r reg(data=nonoptimal_moves_agg)$coefficients[2]` and `r reg(data=nonoptimal_moves_agg)$coefficients[3]`). 
+When breaking out comparison down by the optimal and non-optimal moves, we still see that the directives delivered by audio lead to a higher and statistically significant move compliance rate regardless of whether the move is optimal or not. This further supports our initial findings that compliance rates differ between audio and visual directions. We note that the effect is stronger in size for the non-optimal moves for both gendered voices, suggesting that subjects listen regardless of game strategy Compare the size of the coefficient estimates for the female and male audio treatments, respectively, (`r round(reg(data=optimal_moves_agg)$coefficients[2],2)` and `r round(reg(data=optimal_moves_agg)$coefficients[3],2)`) for optimal moves verses nonoptimal moves (`r round(reg(data=nonoptimal_moves_agg)$coefficients[2],2)` and `r round(reg(data=nonoptimal_moves_agg)$coefficients[3],2)`). 
 
 
 When examining the comparison between the speaker’s gender, we see again that there is a slightly higher treatment effect for the female speaker, but the difference in effect sizes is not statistically significant following a two-sample t-test.
@@ -902,11 +906,11 @@ t_test_result_nonoptimal_tf
 t_test_result_nonoptimal_t 
 ```
 
-Consistent with the regression results, from the t-tests we observe that the treatment effect for the male voice and female voice treatments for the optimal moves are statistically different from zero with a p-value in the t-test of $`r round(t_test_result_optimal_tm$p.value,4)`$ and `r round(t_test_result_optimal_tf$p.value,4)`, respectively. We observe similar effects from the t-tests for the non-optimal moves with p-values of `r round(t_test_result_nonoptimal_tm$p.value,4)` and `r round(t_test_result_nonoptimal_tf$p.value,4)`, respectively. The effect between the gendered voice treatments for both optimal and non-optimal moves is statistically insignificant with a p-value in the t-test of `r round(t_test_result_optimal_t$p.value,4)` and `r round(t_test_result_nonoptimal_t$p.value,4)`. 
+Consistent with the regression results, from the t-tests we observe that the treatment effect for the male voice and female voice treatments for the optimal moves are statistically different from zero with a p-value in the t-test of `r round(t_test_result_optimal_tm$p.value,4)` and `r round(t_test_result_optimal_tf$p.value,4)`, respectively. We observe similar effects from the t-tests for the non-optimal moves with p-values of `r round(t_test_result_nonoptimal_tm$p.value,4)` and `r round(t_test_result_nonoptimal_tf$p.value,4)`, respectively. The effect between the gendered voice treatments for both optimal and non-optimal moves is statistically insignificant with a p-value in the t-test of `r round(t_test_result_optimal_t$p.value,4)` and `r round(t_test_result_nonoptimal_t$p.value,4)`. 
 
 ## Evaluation of compliance to suggested moves based on gender of subject 
 
-We block randomized subjects into treatment assignments by their gender. This design has the benefit of allowing us to estimate treatment effects for each block. Therefore, we estimated the treatment effects on the subset of the data corresponding to the male and female subjects separately. Below, we report the regression table from our postulated model where the outcome remains the proportional compliance rates.
+We block randomized subjects into treatment assignments by their gender. This design has the benefit of allowing us to estimate treatment effects for each block. Therefore, we estimated the treatment effects on the subset of the data corresponding to the male and female subjects separately. Below, we report the regression table from our postulated model where the outcome remains the proportional compliance rates. Columns 1 and 2 show the results for the male subjects only (with robust and clustered standard errors, respectively), while columns 3 and 4 show the results for the female subjects only (also with robust and clustered standard errors, respectively).
 
 $Y = \beta_{1}maleaudio + \beta_{2}femaleaudio + \beta_{3}age$
 
@@ -967,7 +971,7 @@ stargazer(reg_male, reg_male,reg_female,reg_female,
 
 We find that the treatment effects of the gendered audio voices are statistically significant for the male subjects only. For the male subjects, the treatment effect from the female audio voice is `r round(coeftest(reg_male,reg_male$vcovHC_)[2],3)` with robust standard error of `r round(coeftest(reg_male,reg_male$vcovHC_)[2,2],3)`, while for the male audio voice the estimated treatment effect is `r round(coeftest(reg_male,reg_male$vcovHC_)[3],3)` with robust standard error of `r round(coeftest(reg_male,reg_male$vcovHC_)[3,2],3)`.
 
-For the female subjects, the treatment effects are statistically insignificant. The effect from female audio voice is `r round(coeftest(reg_female,reg_female$vcovHC_)[2],3)` with robust standard error of `r round(coeftest(reg_female,reg_female$vcovHC_)[2,2],3)`, while for the male audio voice the estimated treatment effect is `r coeftest(reg_female,reg_female$vcovHC_)[3]` with robust standard error of `r round(coeftest(reg_female,reg_female$vcovHC_)[3,2],3)`.
+For the female subjects, the treatment effects are statistically insignificant. The effect from female audio voice is `r round(coeftest(reg_female,reg_female$vcovHC_)[2],3)` with robust standard error of `r round(coeftest(reg_female,reg_female$vcovHC_)[2,2],3)`, while for the male audio voice the estimated treatment effect is `r round(coeftest(reg_female,reg_female$vcovHC_)[3],3)` with robust standard error of `r round(coeftest(reg_female,reg_female$vcovHC_)[3,2],3)`.
 
 ## Evaluation of compliance to suggested moves based on order of game 
 
@@ -1028,7 +1032,7 @@ hist(all_moves_game4_agg$comply_rate,
      xlab="Proportion of compliance rates", ylab = "Frequency", breaks=20)
 ```
 
-Estimating the linear regressions on aggregated data for all 5 games with clustered standard errors (clustering by subject identifier), we see that the treatment effects for the gendered audio voices are persistent across game order. We find statistically significant estimates for both gendered audio voice treatments over each game number. The exception is the treatment male audio voice effect in Game 5, which we ascribe as due to random chance. Over each game, the effect size is always larger for the female audio voice treatment.
+Estimating the linear regressions on aggregated data for all 5 games with clustered standard errors (clustering by subject identifier), we see that the treatment effects for the gendered audio voices are persistent across game order. We find statistically significant estimates for both gendered audio voice treatments over each game number. The exception is the treatment male audio voice effect in Game 5, which we ascribe as due to random chance. Over each game, the effect size is always larger for the female audio voice treatment. Columns 1 through 5 correspond to the regression results for Games 1 through 5.
 
 ```{r regression output for by-game models, include=TRUE}
 # report the formatted regression results for all games with clustered standard errors.
@@ -1098,7 +1102,7 @@ hist(all_moves_move3_agg$comply_rate,
 
 ```
 
-Estimating the linear regressions on aggregated data for the first 3 ordered moves with clustered standard errors (clustering by subject identifier), we see that the treatment effects for the gendered audio voices are persistent across move order. We find statistically significant estimates for both gendered audio voice treatments over each of the first three ordered moves. Over each move, the effect size is always larger for the female audio voice treatment. Curiously, the treatment effect size dwindle smaller for the female audio voice treatment over the 3 ordered moves, yet no pattern is found for the male audio voice treatments over the 3 ordered moves.
+Estimating the linear regressions on aggregated data for the first 3 ordered moves with clustered standard errors (clustering by subject identifier), we see that the treatment effects for the gendered audio voices are persistent across move order. We find statistically significant estimates for both gendered audio voice treatments over each of the first three ordered moves. Over each move, the effect size is always larger for the female audio voice treatment. Curiously, the treatment effect size dwindle smaller for the female audio voice treatment over the 3 ordered moves, yet no pattern is found for the male audio voice treatments over the 3 ordered moves. In the regression output, columns 1 through 3 correspond to ordered moves 1 through 3.
 
 ```{r regression estimates for by-move analysis, include=TRUE}
 # report the formatted regression results
